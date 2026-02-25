@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HIV耐药综合分析平台</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;600&display=swap');
+:root{
+  --bg:#f4f3f0;--bg2:#eceae5;--sur:#fff;--sur2:#f8f7f4;
+  --bd:#e0ddd6;--bd2:#c9c5bc;
+  --tx:#1e1c18;--tx2:#4a4740;--tx3:#7a776e;--tx4:#a8a49a;
+  --bl:#1d5fa8;--blh:#2470c2;--bll:#e6effa;--blb:#aeccf0;
+  --gr:#1e7a48;--grl:#e4f5ec;--grb:#90d4ae;
+  --rd:#b02828;--rdl:#fae8e8;--rdb:#e0a0a0;
+  --am:#9a5a10;--aml:#fdf0e0;--amb:#e8c070;
+  --pu:#6030a0;--pul:#f0e8fa;--pub:#c0a0e8;
+  --te:#0a7870;--tel:#e4f5f4;--teb:#90d0cc;
+  --pk:#a0286a;--pkl:#fae8f4;--pkb:#e0a0cc;
+  --r:5px;--rl:10px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:'Noto Sans SC',sans-serif;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.nav{background:var(--sur);border-bottom:1px solid var(--bd);padding:0 24px;display:flex;align-items:center;height:52px;position:sticky;top:0;z-index:200;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.brand{display:flex;align-items:center;gap:9px;margin-right:28px;flex-shrink:0}
+.bmark{width:30px;height:30px;background:var(--bl);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff}
+.bname{font-family:'Source Serif 4',serif;font-size:14px;font-weight:600;color:var(--tx);white-space:nowrap}
+.navlinks{display:flex;align-items:stretch;height:100%;overflow-x:auto;gap:0}
+.navlinks::-webkit-scrollbar{display:none}
+.nla{display:flex;align-items:center;padding:0 14px;font-size:12px;color:var(--tx3);text-decoration:none;border-bottom:2px solid transparent;transition:.15s;white-space:nowrap;cursor:pointer;flex-shrink:0}
+.nla:hover{color:var(--tx)}.nla.on{color:var(--bl);border-bottom-color:var(--bl);font-weight:500}
+.shell{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:188px;flex-shrink:0;background:var(--sur);border-right:1px solid var(--bd);padding:16px 0;position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:var(--bd2)}
+.sbsec{padding:0 10px 8px;margin-bottom:2px}
+.sbsec-lbl{font-size:10px;font-weight:600;color:var(--tx4);letter-spacing:1.5px;text-transform:uppercase;padding:0 6px;margin-bottom:4px}
+.sbi{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:var(--r);font-size:12px;color:var(--tx3);cursor:pointer;transition:.12s}
+.sbi:hover{background:var(--bll);color:var(--tx)}.sbi.on{background:var(--bll);color:var(--bl);font-weight:500}
+.sbdot{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:var(--tx4);flex-shrink:0}
+.sbi.on .sbdot{border-color:var(--bl);color:var(--bl);background:var(--bll)}.sbi.done .sbdot{border-color:var(--gr);color:var(--gr);background:var(--grl)}
+.main{flex:1;min-width:0;padding:22px 24px 56px;overflow-x:hidden}
+.spage{display:none}.spage.on{display:block}
+.ph{margin-bottom:20px}
+.pm{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;color:var(--bl);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.ph h2{font-family:'Source Serif 4',serif;font-size:20px;font-weight:600;color:var(--tx);margin-bottom:4px}
+.ph p{font-size:12px;color:var(--tx3);max-width:700px;line-height:1.7}
+.card{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);box-shadow:var(--sh);margin-bottom:14px;overflow:hidden}
+.ch{padding:11px 17px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:9px;background:var(--sur2);flex-wrap:wrap}
+.cstep{width:23px;height:23px;border-radius:50%;border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--tx3);flex-shrink:0}
+.cstep.a{border-color:var(--bl);color:var(--bl);background:var(--bll)}.cstep.done{border-color:var(--gr);color:var(--gr);background:var(--grl)}
+.ct{font-size:13px;font-weight:600;color:var(--tx)}.csub{font-size:11px;color:var(--tx3);margin-left:auto;white-space:nowrap}
+.cb{padding:16px}
+.ug{display:grid;gap:10px}
+.ug2{grid-template-columns:repeat(2,1fr)}.ug3{grid-template-columns:repeat(3,1fr)}.ug4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1100px){.ug4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.ug3{grid-template-columns:repeat(2,1fr)}.ug4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.ug2,.ug3,.ug4{grid-template-columns:1fr}}
+.uz{border:1.5px dashed var(--bd2);border-radius:var(--rl);padding:14px 10px;text-align:center;cursor:pointer;transition:.15s;position:relative;background:var(--sur2);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100px}
+.uz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.uz:hover{border-color:var(--blh);background:var(--bll)}.uz.drag{border-color:var(--bl);background:var(--bll);box-shadow:0 0 0 3px var(--bll)}.uz.loaded{border-color:var(--gr);border-style:solid;background:var(--grl)}
+.uz .ico{font-size:18px;margin-bottom:4px}.uz .utype{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;margin-bottom:2px}
+.uz .uhint{font-size:10px;color:var(--tx4);line-height:1.4}.uz .ufn{font-size:10px;color:var(--gr);font-weight:500;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px;display:none}
+.uz.loaded .ufn{display:block}
+.c-pr{color:var(--bl)}.c-nrti{color:var(--gr)}.c-nnrti{color:var(--am)}.c-insti{color:var(--pk)}.c-sub{color:var(--te)}.c-tdr{color:var(--pu)}.c-kb{color:var(--rd)}
+.cfgbox{margin-top:8px;padding:9px 11px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r)}
+.cfgtitle{font-size:9px;font-weight:600;color:var(--tx4);letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px}
+.cfgrow{display:flex;align-items:center;gap:5px;margin-bottom:4px}.cfgrow:last-child{margin-bottom:0}
+.cfglb{font-size:10px;color:var(--tx3);width:72px;flex-shrink:0}
+.cfgi{width:50px;border:1px solid var(--bd2);border-radius:3px;padding:3px 6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--bl);background:var(--sur);outline:none}
+.cfgi:focus{border-color:var(--bl)}.cfgnote{font-size:9px;color:var(--tx4);margin-top:4px}
+.kbgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.kbi{padding:9px 11px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r)}
+.kbit{font-size:10px;color:var(--tx4);margin-bottom:3px}.kbic{font-size:16px;font-weight:600;font-family:'Source Serif 4',serif;color:var(--tx3)}
+.kbi.ok{border-color:var(--grb);background:var(--grl)}.kbi.ok .kbic{color:var(--gr)}
+/* KB preview table */
+.kbrange{display:flex;align-items:center;gap:6px;margin:7px 0;flex-wrap:wrap}
+.kbrange label{font-size:10px;color:var(--tx3)}
+.kbrange input{width:52px;border:1px solid var(--bd2);border-radius:3px;padding:3px 6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--bl);background:var(--sur);outline:none}
+.kbrange input:focus{border-color:var(--bl)}.kbr-arrow{font-size:12px;color:var(--tx4)}
+.kbr-result{font-size:10px;color:var(--tx4);margin-top:4px}
+.kbprev{width:100%;border-collapse:collapse;font-size:11px}
+.kbprev th{padding:3px 7px;background:var(--bg2);font-size:9px;font-weight:600;color:var(--tx3);text-align:left;white-space:nowrap}
+.kbprev td{padding:3px 7px;border-bottom:1px solid var(--bd);white-space:nowrap}
+.kbprev td.hl{background:var(--rdl);color:var(--rd);font-weight:600}
+.kbprev td.mut-col{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--tx)}
+.pbar{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:12px;flex-wrap:wrap}
+.plbl{font-size:12px;color:var(--tx2);font-weight:500;flex-shrink:0}
+.pi{width:62px;border:1px solid var(--bd2);border-radius:var(--r);padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--bl);background:var(--sur);text-align:center;outline:none}
+.pi:focus{border-color:var(--bl);box-shadow:0 0 0 2px var(--bll)}
+.chip{display:inline-flex;align-items:center;padding:2px 9px;border-radius:100px;font-size:10px;font-weight:500;white-space:nowrap}
+.cg{background:var(--grl);color:var(--gr);border:1px solid var(--grb)}.ca{background:var(--aml);color:var(--am);border:1px solid var(--amb)}
+.cbl{background:var(--bll);color:var(--bl);border:1px solid var(--blb)}.crd{background:var(--rdl);color:var(--rd);border:1px solid var(--rdb)}
+.cpu{background:var(--pul);color:var(--pu);border:1px solid var(--pub)}.cte{background:var(--tel);color:var(--te);border:1px solid var(--teb)}
+.cpk{background:var(--pkl);color:var(--pk);border:1px solid var(--pkb)}
+.btn{padding:7px 18px;border-radius:var(--r);font-family:'Noto Sans SC',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:.15s;border:1px solid transparent;display:inline-flex;align-items:center;gap:5px}
+.bp{background:var(--bl);color:#fff;border-color:var(--bl)}.bp:hover{background:var(--blh)}.bp:disabled{opacity:.4;cursor:not-allowed}
+.bo{background:var(--sur);color:var(--tx2);border-color:var(--bd2)}.bo:hover{border-color:var(--bl);color:var(--bl)}
+.logp{margin-top:10px;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;display:none}.logp.on{display:block}
+.lh{padding:6px 11px;background:var(--bg2);border-bottom:1px solid var(--bd);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--tx3);display:flex;align-items:center;gap:6px}
+.ldot{width:6px;height:6px;border-radius:50%;background:var(--bl);animation:pu 1.4s infinite;flex-shrink:0}.ldot.done{background:var(--gr);animation:none}
+@keyframes pu{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.lb{padding:9px 11px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.9;max-height:160px;overflow-y:auto;color:var(--tx2)}
+.lb::-webkit-scrollbar{width:3px}.lb::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
+.ll{display:flex;gap:9px}.lt{color:var(--tx4);flex-shrink:0}
+.lm.ok{color:var(--gr)}.lm.info{color:var(--bl)}.lm.warn{color:var(--am)}.lm.err{color:var(--rd)}
+.note{padding:8px 11px;border-radius:var(--r);font-size:11px;line-height:1.7;margin-top:9px}
+.note.bl{background:var(--bll);border:1px solid var(--blb);color:var(--tx2)}.note.am{background:var(--aml);border:1px solid var(--amb);color:var(--tx2)}.note.rd{background:var(--rdl);border:1px solid var(--rdb);color:var(--tx2)}
+.sec-t{font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:11px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
+.sum-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:14px}
+.scard{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);padding:12px 14px}
+.sv{font-family:'Source Serif 4',serif;font-size:24px;font-weight:600;line-height:1;margin-bottom:3px}
+.sl{font-size:10px;color:var(--tx4)}.ss{font-size:11px;color:var(--tx3);margin-top:2px}
+.res-layout{display:grid;grid-template-columns:200px 1fr;gap:12px;align-items:start}
+@media(max-width:720px){.res-layout{grid-template-columns:1fr}}
+.fp{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;position:sticky;top:62px;max-height:calc(100vh - 80px);overflow-y:auto}
+.fp::-webkit-scrollbar{width:3px}.fp::-webkit-scrollbar-thumb{background:var(--bd2)}
+.fph{padding:8px 12px;background:var(--bg2);border-bottom:1px solid var(--bd);font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.8px;text-transform:uppercase;position:sticky;top:0;z-index:10}
+.fpi{padding:8px 12px;border-bottom:1px solid var(--bd);cursor:pointer;transition:.12s;display:flex;justify-content:space-between;align-items:center}
+.fpi:last-child{border-bottom:none}.fpi:hover{background:var(--bll)}.fpi.on{background:var(--bll)}
+.fpname{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--tx)}.fpi.on .fpname{color:var(--bl)}
+.fpcnt{font-size:10px;background:var(--bg2);padding:1px 6px;border-radius:100px;color:var(--tx4);white-space:nowrap;flex-shrink:0}.fpi.on .fpcnt{background:var(--blb);color:var(--bl)}
+.mutp{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden}
+.mutph{padding:10px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:7px;background:var(--sur2);flex-wrap:wrap}
+.tblwrap{overflow-x:auto}
+.rtbl{width:100%;border-collapse:collapse;font-size:12px}
+.rtbl thead tr{background:var(--bg2);border-bottom:1px solid var(--bd2)}
+.rtbl th{padding:7px 11px;text-align:left;font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
+.rtbl td{padding:7px 11px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.rtbl tbody tr:last-child td{border-bottom:none}.rtbl tbody tr:hover td{background:var(--bll)}
+.pos-sep td{background:var(--bg2)!important;padding:4px 11px}
+.pos-sep .pos-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.5px}
+.rn{color:var(--tx4);font-family:'JetBrains Mono',monospace;font-size:11px}
+.mn{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--tx)}
+.pw{min-width:110px}.pg{display:flex;align-items:center;gap:6px}
+.pb{flex:1;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden}
+.pf{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.pf.bl{background:var(--bl)}.pf.gr{background:var(--gr)}.pf.pu{background:var(--pu)}.pf.am{background:var(--am)}.pf.pk{background:var(--pk)}
+.pv{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--tx);min-width:22px;text-align:right}
+.empty{text-align:center;padding:28px;color:var(--tx4);font-size:12px}.empty-ico{font-size:22px;margin-bottom:7px;opacity:.4}
+.tabbar{display:flex;border-bottom:1px solid var(--bd);background:var(--sur2);overflow-x:auto}
+.tabbar::-webkit-scrollbar{display:none}
+.tab{padding:9px 15px;font-size:12px;font-weight:500;color:var(--tx3);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;white-space:nowrap;display:flex;align-items:center;gap:4px}
+.tab:hover{color:var(--tx)}.tab.on{color:var(--bl);border-bottom-color:var(--bl)}
+.srctog{display:flex;border:1px solid var(--bd2);border-radius:var(--r);overflow:hidden}
+.stb{padding:5px 12px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:var(--sur);color:var(--tx3);transition:.15s;font-family:'Noto Sans SC',sans-serif}
+.stb:hover{background:var(--bll);color:var(--bl)}.stb.on{background:var(--bl);color:#fff}
+.dlrow{display:flex;gap:7px;padding:11px 15px;border-top:1px solid var(--bd);flex-wrap:wrap}
+/* TRACE */
+.trace-filters{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.trf-lbl{font-size:11px;color:var(--tx3);white-space:nowrap}
+.trf-sel{border:1px solid var(--bd2);border-radius:var(--r);padding:4px 8px;font-size:12px;font-family:'Noto Sans SC',sans-serif;color:var(--tx);background:var(--sur);outline:none}
+.trf-sel:focus{border-color:var(--bl)}
+.trace-wrap{overflow-x:auto;border:1px solid var(--bd);border-radius:var(--r)}
+.trace-table{width:100%;border-collapse:collapse;font-size:12px;min-width:700px}
+.trace-table th{padding:7px 11px;background:var(--bg2);font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.8px;text-transform:uppercase;text-align:left;white-space:nowrap;border-bottom:1px solid var(--bd2)}
+.trace-table td{padding:7px 11px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.trace-table tbody tr:last-child td{border-bottom:none}.trace-table tbody tr:hover td{background:var(--bll)}
+.trace-id{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--tx)}
+.trace-sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--tx2)}
+.trace-counted{display:flex;flex-wrap:wrap;gap:3px;align-items:center}
+.mut-tag{display:inline-flex;align-items:center;padding:1px 6px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;border:1px solid transparent}
+.mut-tag.res{background:var(--rdl);color:var(--rd);border-color:var(--rdb)}
+.mut-tag.skip{background:var(--bg2);color:var(--tx4);border-color:var(--bd);text-decoration:line-through}
+.mut-arrow{font-size:14px;color:var(--tx4);margin:0 2px}
+.trace-pager{display:flex;align-items:center;gap:8px;padding:8px 14px;border-top:1px solid var(--bd);background:var(--sur2)}
+.trace-pager button{padding:4px 12px;border:1px solid var(--bd2);border-radius:var(--r);background:var(--sur);font-size:12px;cursor:pointer;font-family:'Noto Sans SC',sans-serif}
+.trace-pager button:hover{border-color:var(--bl);color:var(--bl)}.trace-pager button:disabled{opacity:.4;cursor:not-allowed}
+#trace-pager-info{font-size:11px;color:var(--tx3);font-family:'JetBrains Mono',monospace}
+/* CHART */
+.chart-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;padding:11px 14px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r)}
+.chart-sel{border:1px solid var(--bd2);border-radius:var(--r);padding:5px 10px;font-size:12px;font-family:'Noto Sans SC',sans-serif;color:var(--tx);background:var(--sur);outline:none;min-width:90px}
+.chart-sel:focus{border-color:var(--bl)}
+.chart-lbl{font-size:11px;color:var(--tx3);white-space:nowrap;font-weight:500}
+.chart-scroll-wrap{overflow-x:auto;border:1px solid var(--bd);border-radius:var(--r);background:var(--sur)}
+.chart-scroll-wrap::-webkit-scrollbar{height:6px}.chart-scroll-wrap::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
+canvas#mainChart{display:block}
+/* YEAR STATS TABLE */
+.year-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.year-tbl th{padding:6px 10px;background:var(--bg2);font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.8px;text-transform:uppercase;text-align:left;white-space:nowrap;border-bottom:1px solid var(--bd2)}
+.year-tbl td{padding:6px 10px;border-bottom:1px solid var(--bd);vertical-align:top}
+.year-tbl tbody tr:hover td{background:var(--bll)}
+/* FOOTER */
+.ft{margin-top:28px;padding-top:14px;border-top:1px solid var(--bd);font-size:11px;color:var(--tx4)}
+</style>
+</head>
+<body>
+<!-- NAV -->
+<nav class="nav">
+  <div class="brand"><div class="bmark">HIV</div><span class="bname">耐药综合分析平台</span></div>
+  <div class="navlinks">
+    <span class="nla on" data-p="upload" onclick="goPage('upload')">① 上传数据</span>
+    <span class="nla" data-p="result-res" onclick="goPage('result-res')">② 耐药突变谱</span>
+    <span class="nla" data-p="result-tdr" onclick="goPage('result-tdr')">③ TDR 传播耐药</span>
+    <span class="nla" data-p="result-trace" onclick="goPage('result-trace')">④ 溯源</span>
+    <span class="nla" data-p="result-chart" onclick="goPage('result-chart')">⑤ 可视化</span>
+  </div>
+</nav>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sbsec">
+    <div class="sbsec-lbl">数据上传</div>
+    <div class="sbi on" id="sb-upload" onclick="goPage('upload')"><div class="sbdot">①</div><span>批量上传文件</span></div>
+  </div>
+  <div class="sbsec">
+    <div class="sbsec-lbl">分析结果</div>
+    <div class="sbi" id="sb-result-res" onclick="goPage('result-res')"><div class="sbdot">A</div><span>耐药突变谱</span></div>
+    <div class="sbi" id="sb-result-tdr" onclick="goPage('result-tdr')"><div class="sbdot">B</div><span>TDR 传播耐药</span></div>
+    <div class="sbi" id="sb-result-trace" onclick="goPage('result-trace')"><div class="sbdot">C</div><span>突变溯源</span></div>
+    <div class="sbi" id="sb-result-chart" onclick="goPage('result-chart')"><div class="sbdot">D</div><span>可视化图表</span></div>
+  </div>
+</aside>
+<main class="main">
+
+<!-- ══════════ PAGE: 上传 ══════════ -->
+<div class="spage on" id="page-upload">
+  <div class="ph"><div class="pm">Step 01 · Upload</div><h2>批量上传数据文件</h2>
+    <p>请上传所有 CSV 文件（UTF-8编码）。列位均有默认值，可根据实际文件修改。上传完成后点击「开始处理」。</p>
+  </div>
+
+  <!-- 阈值设置 -->
+  <div class="card">
+    <div class="ch"><div class="cstep a">①</div><div class="ct">分析阈值设置</div></div>
+    <div class="cb">
+      <div class="pbar" style="margin-bottom:8px">
+        <span class="plbl">「抽血-抗病毒治疗」列 ≥</span>
+        <input class="pi" type="number" id="threshold" value="30" min="0">
+        <span style="font-size:11px;color:var(--tx4)">天</span>
+        <div style="display:flex;gap:6px;margin-left:auto;flex-wrap:wrap">
+          <span class="chip cg">≥ 阈值 = 治疗后</span><span class="chip ca">&lt; 阈值 = 治疗前</span>
+        </div>
+      </div>
+      <div class="pbar" style="margin-bottom:8px">
+        <span class="plbl">序列耐药判定：评分列任意药物 ≥</span>
+        <input class="pi" type="number" id="seq-res-thr" value="10" min="1" max="60">
+        <span style="font-size:11px;color:var(--tx4)">分 即判定为耐药序列</span>
+        <span class="chip crd" style="margin-left:auto">默认 10</span>
+      </div>
+      <div class="pbar">
+        <span class="plbl">知识库突变计入阈值 ≥</span>
+        <input class="pi" type="number" id="kb-res-thr" value="10" min="1" max="60" onchange="refreshAllKbPreviews()">
+        <span style="font-size:11px;color:var(--tx4)">分 知识库中≥此分值的突变单独计入一次</span>
+        <span class="chip ca" style="margin-left:auto">默认 10</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 知识库 -->
+  <div class="card">
+    <div class="ch">
+      <div class="cstep a" id="s-kb">②</div>
+      <div class="ct">斯坦福 HIVdb 判读表（知识库）</div>
+      <div class="csub" id="kb-badge">0 / 4 已载入</div>
+    </div>
+    <div class="cb">
+      <div class="note rd" style="margin-bottom:12px">
+        <strong>⚠️ 知识库判读逻辑：</strong>若序列任一药物评分 ≥ 耐药阈值，则分析该序列突变谱。对每个突变，在知识库中查找：若该突变任一药物评分 ≥ 知识库阈值，则该突变单独计入一次。若所有突变均不满足，则标记为异常序列供人工核查。
+      </div>
+      <div class="ug ug4">
+        <div>
+          <div class="uz" id="kbuz-pr" ondragover="dzo(event,'kbuz-pr')" ondragleave="dzl(event,'kbuz-pr')" ondrop="kbDrop(event,'pr')">
+            <input type="file" accept=".csv" onchange="kbLoad(this,'pr')">
+            <div class="ico">🧬</div><div class="utype c-kb">PR 判读表</div>
+            <div class="uhint">斯坦福蛋白酶判读 CSV</div><div class="ufn" id="kbfn-pr"></div>
+          </div>
+        </div>
+        <div>
+          <div class="uz" id="kbuz-nrti" ondragover="dzo(event,'kbuz-nrti')" ondragleave="dzl(event,'kbuz-nrti')" ondrop="kbDrop(event,'nrti')">
+            <input type="file" accept=".csv" onchange="kbLoad(this,'nrti')">
+            <div class="ico">💊</div><div class="utype c-kb">NRTI 判读表</div>
+            <div class="uhint">斯坦福核苷类判读 CSV</div><div class="ufn" id="kbfn-nrti"></div>
+          </div>
+        </div>
+        <div>
+          <div class="uz" id="kbuz-nnrti" ondragover="dzo(event,'kbuz-nnrti')" ondragleave="dzl(event,'kbuz-nnrti')" ondrop="kbDrop(event,'nnrti')">
+            <input type="file" accept=".csv" onchange="kbLoad(this,'nnrti')">
+            <div class="ico">⚗️</div><div class="utype c-kb">NNRTI 判读表</div>
+            <div class="uhint">斯坦福非核苷类判读 CSV</div><div class="ufn" id="kbfn-nnrti"></div>
+          </div>
+        </div>
+        <div>
+          <div class="uz" id="kbuz-insti" ondragover="dzo(event,'kbuz-insti')" ondragleave="dzl(event,'kbuz-insti')" ondrop="kbDrop(event,'insti')">
+            <input type="file" accept=".csv" onchange="kbLoad(this,'insti')">
+            <div class="ico">🔗</div><div class="utype c-kb" style="color:var(--pk)">INSTI 判读表</div>
+            <div class="uhint">斯坦福整合酶判读 CSV</div><div class="ufn" id="kbfn-insti"></div>
+          </div>
+        </div>
+      </div>
+      <div id="kb-cfgarea" style="display:none;margin-top:12px">
+        <div class="ug ug4" id="kb-cfgcards"></div>
+      </div>
+      <div class="kbgrid" style="margin-top:10px">
+        <div class="kbi" id="kbi-pr"><div class="kbit">蛋白酶知识库</div><div class="kbic" id="kbc-pr">—</div></div>
+        <div class="kbi" id="kbi-nrti"><div class="kbit">核苷类知识库</div><div class="kbic" id="kbc-nrti">—</div></div>
+        <div class="kbi" id="kbi-nnrti"><div class="kbit">非核苷类知识库</div><div class="kbic" id="kbc-nnrti">—</div></div>
+        <div class="kbi" id="kbi-insti"><div class="kbit">整合酶知识库</div><div class="kbic" id="kbc-insti">—</div></div>
+      </div>
+      <div class="note am" style="margin-top:8px">知识库为可选项。若不上传，所有从数据文件中提取到的突变均会被统计。</div>
+    </div>
+  </div>
+
+  <!-- 耐药文件 -->
+  <div class="card">
+    <div class="ch">
+      <div class="cstep a" id="s-drug">③</div>
+      <div class="ct">耐药评分文件（含突变信息）</div>
+      <div class="csub" id="drug-badge">0 / 4 已载入</div>
+    </div>
+    <div class="cb">
+      <div class="ug ug4">
+        <!-- PR -->
+        <div>
+          <div class="uz" id="uz-pr" ondragover="dzo(event,'uz-pr')" ondragleave="dzl(event,'uz-pr')" ondrop="dataDrop(event,'pr')">
+            <input type="file" accept=".csv" onchange="dataLoad(this,'pr')">
+            <div class="ico">🧬</div><div class="utype c-pr">PR · 蛋白酶</div>
+            <div class="uhint">点击选择或拖拽</div><div class="ufn" id="fn-pr"></div>
+          </div>
+          <div class="cfgbox">
+            <div class="cfgtitle">列位配置</div>
+            <div class="cfgrow"><span class="cfglb">治疗天数列</span><input class="cfgi" id="pr-ct" value="C"></div>
+            <div class="cfgrow"><span class="cfglb">突变列 起始</span><input class="cfgi" id="pr-ms" value="E"></div>
+            <div class="cfgrow"><span class="cfglb">突变列 终止</span><input class="cfgi" id="pr-me" value="I"></div>
+            <div class="cfgrow"><span class="cfglb">评分列 起始</span><input class="cfgi" id="pr-ss" value="J"></div>
+            <div class="cfgrow"><span class="cfglb">评分列 终止</span><input class="cfgi" id="pr-se" value="Q"></div>
+          </div>
+        </div>
+        <!-- NRTI -->
+        <div>
+          <div class="uz" id="uz-nrti" ondragover="dzo(event,'uz-nrti')" ondragleave="dzl(event,'uz-nrti')" ondrop="dataDrop(event,'nrti')">
+            <input type="file" accept=".csv" onchange="dataLoad(this,'nrti')">
+            <div class="ico">💊</div><div class="utype c-nrti">NRTI · 核苷类</div>
+            <div class="uhint">点击选择或拖拽</div><div class="ufn" id="fn-nrti"></div>
+          </div>
+          <div class="cfgbox">
+            <div class="cfgtitle">列位配置</div>
+            <div class="cfgrow"><span class="cfglb">治疗天数列</span><input class="cfgi" id="nrti-ct" value="C"></div>
+            <div class="cfgrow"><span class="cfglb">突变列 起始</span><input class="cfgi" id="nrti-ms" value="E"></div>
+            <div class="cfgrow"><span class="cfglb">突变列 终止</span><input class="cfgi" id="nrti-me" value="I"></div>
+            <div class="cfgrow"><span class="cfglb">评分列 起始</span><input class="cfgi" id="nrti-ss" value="J"></div>
+            <div class="cfgrow"><span class="cfglb">评分列 终止</span><input class="cfgi" id="nrti-se" value="P"></div>
+          </div>
+        </div>
+        <!-- NNRTI -->
+        <div>
+          <div class="uz" id="uz-nnrti" ondragover="dzo(event,'uz-nnrti')" ondragleave="dzl(event,'uz-nnrti')" ondrop="dataDrop(event,'nnrti')">
+            <input type="file" accept=".csv" onchange="dataLoad(this,'nnrti')">
+            <div class="ico">⚗️</div><div class="utype c-nnrti">NNRTI · 非核苷类</div>
+            <div class="uhint">点击选择或拖拽</div><div class="ufn" id="fn-nnrti"></div>
+          </div>
+          <div class="cfgbox">
+            <div class="cfgtitle">列位配置</div>
+            <div class="cfgrow"><span class="cfglb">治疗天数列</span><input class="cfgi" id="nnrti-ct" value="C"></div>
+            <div class="cfgrow"><span class="cfglb">突变列 起始</span><input class="cfgi" id="nnrti-ms" value="E"></div>
+            <div class="cfgrow"><span class="cfglb">突变列 终止</span><input class="cfgi" id="nnrti-me" value="I"></div>
+            <div class="cfgrow"><span class="cfglb">评分列 起始</span><input class="cfgi" id="nnrti-ss" value="J"></div>
+            <div class="cfgrow"><span class="cfglb">评分列 终止</span><input class="cfgi" id="nnrti-se" value="N"></div>
+          </div>
+        </div>
+        <!-- INSTI -->
+        <div>
+          <div class="uz" id="uz-insti" ondragover="dzo(event,'uz-insti')" ondragleave="dzl(event,'uz-insti')" ondrop="dataDrop(event,'insti')">
+            <input type="file" accept=".csv" onchange="dataLoad(this,'insti')">
+            <div class="ico">🔗</div><div class="utype c-insti">INSTI · 整合酶</div>
+            <div class="uhint">点击选择或拖拽</div><div class="ufn" id="fn-insti"></div>
+          </div>
+          <div class="cfgbox">
+            <div class="cfgtitle">列位配置</div>
+            <div class="cfgrow"><span class="cfglb">治疗天数列</span><input class="cfgi" id="insti-ct" value="C"></div>
+            <div class="cfgrow"><span class="cfglb">突变列 起始</span><input class="cfgi" id="insti-ms" value="E"></div>
+            <div class="cfgrow"><span class="cfglb">突变列 终止</span><input class="cfgi" id="insti-me" value="I"></div>
+            <div class="cfgrow"><span class="cfglb">评分列 起始</span><input class="cfgi" id="insti-ss" value="J"></div>
+            <div class="cfgrow"><span class="cfglb">评分列 终止</span><input class="cfgi" id="insti-se" value="M"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 亚型 & TDR -->
+  <div class="card">
+    <div class="ch">
+      <div class="cstep a" id="s-aux">④</div>
+      <div class="ct">亚型信息 & TDR 传播耐药文件</div>
+      <div class="csub" id="aux-badge">0 / 2 已载入</div>
+    </div>
+    <div class="cb">
+      <div class="ug ug2">
+        <div>
+          <div class="uz" id="uz-sub" ondragover="dzo(event,'uz-sub')" ondragleave="dzl(event,'uz-sub')" ondrop="dataDrop(event,'sub')">
+            <input type="file" accept=".csv" onchange="dataLoad(this,'sub')">
+            <div class="ico">🌐</div><div class="utype c-sub">亚型信息文件</div>
+            <div class="uhint">序列ID及亚型判读结果</div><div class="ufn" id="fn-sub"></div>
+          </div>
+          <div class="cfgbox">
+            <div class="cfgtitle">列位配置</div>
+            <div class="cfgrow"><span class="cfglb">序列 ID 列</span><input class="cfgi" id="sub-id" value="A"></div>
+            <div class="cfgrow"><span class="cfglb">确诊日期列</span><input class="cfgi" id="sub-date" value="B"></div>
+            <div class="cfgrow"><span class="cfglb">中疾控列</span><input class="cfgi" id="sub-cdc" value="C"></div>
+            <div class="cfgrow"><span class="cfglb">人工分型列</span><input class="cfgi" id="sub-man" value="G"></div>
+            <div style="border-top:1px solid var(--bd);margin:6px 0 5px;"></div>
+            <div class="cfgrow"><span class="cfglb">自定义列</span><input class="cfgi" id="sub-cus" value="" placeholder="如H"></div>
+            <div class="cfgrow"><span class="cfglb" style="width:72px">自定义名称</span><input class="cfgi" id="sub-cus-name" value="" placeholder="如新标注" style="width:110px"></div>
+            <div class="cfgnote">日期格式 2021/1/5，自定义列为可选第三分型</div>
+          </div>
+        </div>
+        <div>
+          <div class="uz" id="uz-tdr" ondragover="dzo(event,'uz-tdr')" ondragleave="dzl(event,'uz-tdr')" ondrop="dataDrop(event,'tdr')">
+            <input type="file" accept=".csv" onchange="dataLoad(this,'tdr')">
+            <div class="ico">🔬</div><div class="utype c-tdr">TDR 传播耐药文件</div>
+            <div class="uhint">序列名 + 各药类突变列</div><div class="ufn" id="fn-tdr"></div>
+          </div>
+          <div class="cfgbox">
+            <div class="cfgtitle">列位配置</div>
+            <div class="cfgrow"><span class="cfglb">序列 ID 列</span><input class="cfgi" id="tdr-id" value="A"></div>
+            <div class="cfgrow"><span class="cfglb">蛋白酶列</span><input class="cfgi" id="tdr-pr" value="B"></div>
+            <div class="cfgrow"><span class="cfglb">核苷类列</span><input class="cfgi" id="tdr-nrti" value="C"></div>
+            <div class="cfgrow"><span class="cfglb">非核苷类列</span><input class="cfgi" id="tdr-nnrti" value="D"></div>
+            <div class="cfgrow"><span class="cfglb">整合酶列</span><input class="cfgi" id="tdr-insti" value="E"></div>
+            <div class="cfgnote">None/空值 忽略</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 执行 -->
+  <div class="card">
+    <div class="ch"><div class="cstep a">⑤</div><div class="ct">执行全量分析</div></div>
+    <div class="cb">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn bp" id="btnrun" onclick="runAll()" disabled>▶ 开始处理</button>
+        <span style="font-size:12px;color:var(--tx4)" id="rhint">需要：至少1个耐药文件 + 亚型文件</span>
+      </div>
+      <div class="logp" id="logp">
+        <div class="lh"><div class="ldot" id="ldot"></div><span id="lstatus">处理中...</span></div>
+        <div class="lb" id="logb"></div>
+      </div>
+      <div id="anomaly-section" style="display:none;margin-top:12px">
+        <div class="note rd"><strong>⚠️ 发现异常序列（需人工核查）：</strong>这些序列被判为耐药，但携带的所有突变在知识库中均低于阈值，无法归类，已从统计中排除。</div>
+        <div style="display:flex;gap:7px;margin-top:8px;flex-wrap:wrap" id="anomaly-btns"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE: 耐药突变谱 ══════════ -->
+<div class="spage" id="page-result-res">
+  <div class="ph"><div class="pm">Analysis A · Drug Resistance Mutations</div><h2>耐药突变谱分析</h2>
+    <p>按治疗状态（前/后）× 亚型分层，统计每种亚型的耐药序列数及各耐药突变出现次数。同位点突变按频次降序排列并归组。</p>
+  </div>
+  <div id="res-summary-card" class="card" style="display:none">
+    <div class="ch"><div class="cstep done">✓</div><div class="ct">全局统计概览</div></div>
+    <div class="cb" id="res-summary-body"></div>
+  </div>
+  <div id="res-main-card" class="card" style="display:none">
+    <div class="ch">
+      <div class="cstep done">A</div><div class="ct">分层统计结果</div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:11px;color:var(--tx3)">分型：</span>
+        <div class="srctog" id="res-srctog">
+          <button class="stb on" id="res-src-cdc" onclick="setResSrc('cdc')">中疾控（C列）</button>
+          <button class="stb" id="res-src-man" onclick="setResSrc('man')">人工分型（G列）</button>
+          <button class="stb" id="res-src-cus" onclick="setResSrc('cus')" style="display:none">自定义分型</button>
+        </div>
+      </div>
+    </div>
+    <div class="tabbar" id="res-treat-tabs">
+      <div class="tab on" data-t="pre" onclick="setResTreat('pre')">💊 治疗前</div>
+      <div class="tab" data-t="post" onclick="setResTreat('post')">💉 治疗后</div>
+    </div>
+    <div class="tabbar" style="border-top:none" id="res-drug-tabs">
+      <div class="tab on" data-d="pr" onclick="setResDrug('pr')">🧬 蛋白酶 PR</div>
+      <div class="tab" data-d="nrti" onclick="setResDrug('nrti')">💊 核苷类 NRTI</div>
+      <div class="tab" data-d="nnrti" onclick="setResDrug('nnrti')">⚗️ 非核苷类 NNRTI</div>
+      <div class="tab" data-d="insti" onclick="setResDrug('insti')">🔗 整合酶 INSTI</div>
+    </div>
+    <div id="res-content" style="padding:14px"><div class="empty"><div class="empty-ico">📊</div>处理完成后在此显示</div></div>
+    <div class="dlrow" id="res-dlrow" style="display:none">
+      <button class="btn bo" onclick="dlRes()">下载当前视图 CSV</button>
+      <button class="btn bo" onclick="dlResAll()">下载全量结果 CSV</button>
+    </div>
+  </div>
+  <div class="empty" id="res-empty"><div class="empty-ico">⬆️</div>请先完成文件上传和处理</div>
+</div>
+
+<!-- ══════════ PAGE: TDR ══════════ -->
+<div class="spage" id="page-result-tdr">
+  <div class="ph"><div class="pm">Analysis B · Transmitted Drug Resistance</div><h2>TDR 传播耐药突变谱</h2>
+    <p>基于 TDR 文件，按治疗状态 × 亚型分层统计传播性耐药突变出现次数。同位点突变归组排列。</p>
+  </div>
+  <div id="tdr-summary-card" class="card" style="display:none">
+    <div class="ch"><div class="cstep done">✓</div><div class="ct">TDR 全局统计</div></div>
+    <div class="cb" id="tdr-summary-body"></div>
+  </div>
+  <div id="tdr-main-card" class="card" style="display:none">
+    <div class="ch">
+      <div class="cstep done">B</div><div class="ct">TDR 分层统计</div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <div class="srctog" id="tdr-srctog">
+          <button class="stb on" id="tdr-src-cdc" onclick="setTdrSrc('cdc')">中疾控（C列）</button>
+          <button class="stb" id="tdr-src-man" onclick="setTdrSrc('man')">人工分型（G列）</button>
+          <button class="stb" id="tdr-src-cus" onclick="setTdrSrc('cus')" style="display:none">自定义分型</button>
+        </div>
+      </div>
+    </div>
+    <div class="tabbar" id="tdr-treat-tabs">
+      <div class="tab on" data-t="pre" onclick="setTdrTreat('pre')">💊 治疗前</div>
+      <div class="tab" data-t="post" onclick="setTdrTreat('post')">💉 治疗后</div>
+    </div>
+    <div class="tabbar" style="border-top:none" id="tdr-drug-tabs">
+      <div class="tab on" data-d="pr" onclick="setTdrDrug('pr')">🧬 蛋白酶 PR</div>
+      <div class="tab" data-d="nrti" onclick="setTdrDrug('nrti')">💊 核苷类 NRTI</div>
+      <div class="tab" data-d="nnrti" onclick="setTdrDrug('nnrti')">⚗️ 非核苷类 NNRTI</div>
+      <div class="tab" data-d="insti" onclick="setTdrDrug('insti')">🔗 整合酶 INSTI</div>
+    </div>
+    <div id="tdr-content" style="padding:14px"><div class="empty"><div class="empty-ico">📊</div>处理完成后在此显示</div></div>
+    <div class="dlrow" id="tdr-dlrow" style="display:none">
+      <button class="btn bo" onclick="dlTdr()">下载当前视图 CSV</button>
+      <button class="btn bo" onclick="dlTdrAll()">下载全量 TDR CSV</button>
+    </div>
+  </div>
+  <div class="empty" id="tdr-empty"><div class="empty-ico">⬆️</div>请先完成文件上传和处理</div>
+</div>
+
+<!-- ══════════ PAGE: 溯源 ══════════ -->
+<div class="spage" id="page-result-trace">
+  <div class="ph"><div class="pm">Analysis C · Mutation Trace</div><h2>突变判读溯源</h2>
+    <p>逐患者展示原始突变列表 → 知识库匹配过程 → 最终计入统计的耐药突变。红色=耐药（已计入），灰色=未计入，红底行=异常序列。</p>
+  </div>
+  <div id="trace-empty" class="empty"><div class="empty-ico">⬆️</div>请先完成文件上传和处理</div>
+  <div id="trace-main" style="display:none">
+    <div class="card">
+      <div class="ch"><div class="cstep done">C</div><div class="ct">患者突变判读溯源</div><div class="csub" id="trace-total-hint"></div></div>
+      <div class="cb">
+        <div class="trace-filters">
+          <span class="trf-lbl">药物类别</span>
+          <select class="trf-sel" id="trf-drug" onchange="renderTrace()">
+            <option value="pr">🧬 蛋白酶 PR</option>
+            <option value="nrti">💊 核苷类 NRTI</option>
+            <option value="nnrti">⚗️ 非核苷类 NNRTI</option>
+            <option value="insti">🔗 整合酶 INSTI</option>
+          </select>
+          <span class="trf-lbl" style="margin-left:6px">治疗状态</span>
+          <select class="trf-sel" id="trf-treat" onchange="renderTrace()">
+            <option value="all">全部</option><option value="pre">治疗前</option><option value="post">治疗后</option>
+          </select>
+          <span class="trf-lbl" style="margin-left:6px">筛选</span>
+          <select class="trf-sel" id="trf-res" onchange="renderTrace()">
+            <option value="res">仅耐药患者</option><option value="anomaly">仅异常序列</option><option value="all">全部患者</option>
+          </select>
+          <span class="trf-lbl" style="margin-left:6px">每页</span>
+          <select class="trf-sel" id="trf-pagesize" onchange="tracePageReset()">
+            <option value="25">25 条</option><option value="50">50 条</option><option value="100">100 条</option>
+          </select>
+        </div>
+        <div class="note bl" style="margin-bottom:12px;font-size:11px">
+          <strong>图例：</strong>
+          <span class="mut-tag res">M184V</span> KB耐药突变（已计入）&nbsp;&nbsp;
+          <span class="mut-tag skip">V179D</span> 低于KB阈值（未计入）&nbsp;&nbsp;
+          <span style="font-size:10px;color:var(--rd);font-weight:600">红底行</span> = 异常序列，已排除统计并可下载核查
+        </div>
+        <div class="trace-wrap"><table class="trace-table" id="trace-tbl">
+          <thead><tr>
+            <th style="width:130px">序列 ID</th><th style="width:70px">治疗状态</th>
+            <th style="width:100px">亚型（中疾控）</th><th>原始突变 → 判读结果</th><th style="width:90px">计入突变数</th>
+          </tr></thead>
+          <tbody id="trace-tbody"></tbody>
+        </table></div>
+        <div class="trace-pager" id="trace-pager">
+          <button id="trace-prev" onclick="tracePagePrev()">← 上一页</button>
+          <span id="trace-pager-info"></span>
+          <button id="trace-next" onclick="tracePageNext()">下一页 →</button>
+          <span style="margin-left:auto;font-size:11px;color:var(--tx4)" id="trace-count-hint"></span>
+        </div>
+      </div>
+      <div class="dlrow">
+        <button class="btn bo" onclick="dlTrace()">下载当前筛选 CSV</button>
+        <button class="btn bo" onclick="dlTraceAll()">下载全量溯源 CSV</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE: 可视化 ══════════ -->
+<div class="spage" id="page-result-chart">
+  <div class="ph"><div class="pm">Analysis D · Visualization</div><h2>耐药突变可视化</h2>
+    <p>交互选择药物类别、年份、治疗状态、亚型，以柱状图或饼图展示耐药突变频次分布。</p>
+  </div>
+  <div id="chart-empty" class="empty"><div class="empty-ico">⬆️</div>请先完成文件上传和处理</div>
+  <div id="chart-main" style="display:none">
+    <div class="card">
+      <div class="ch"><div class="cstep done">D</div><div class="ct">可视化参数设置</div></div>
+      <div class="cb">
+        <div class="chart-controls">
+          <span class="chart-lbl">药物类别</span>
+          <select class="chart-sel" id="ch-drug" onchange="renderChart()">
+            <option value="pr">🧬 蛋白酶 PR</option>
+            <option value="nrti">💊 核苷类 NRTI</option>
+            <option value="nnrti">⚗️ 非核苷类 NNRTI</option>
+            <option value="insti">🔗 整合酶 INSTI</option>
+          </select>
+          <span class="chart-lbl">确诊年份</span>
+          <select class="chart-sel" id="ch-year" onchange="renderChart()"></select>
+          <span class="chart-lbl">治疗状态</span>
+          <select class="chart-sel" id="ch-treat" onchange="renderChart()">
+            <option value="all">全部</option><option value="pre">治疗前</option><option value="post">治疗后</option>
+          </select>
+          <span class="chart-lbl">亚型</span>
+          <select class="chart-sel" id="ch-sub" onchange="renderChart()"></select>
+          <span class="chart-lbl">图表类型</span>
+          <select class="chart-sel" id="ch-type" onchange="renderChart()">
+            <option value="bar">柱状图</option><option value="pie">饼图</option>
+          </select>
+          <span class="chart-lbl">分型来源</span>
+          <select class="chart-sel" id="ch-src" onchange="updateChartSubOptions()">
+            <option value="cdc">中疾控（C列）</option><option value="man">人工分型（G列）</option>
+          </select>
+        </div>
+        <div class="chart-scroll-wrap">
+          <canvas id="mainChart" height="420"></canvas>
+        </div>
+        <div class="dlrow" style="margin-top:0">
+          <button class="btn bo" onclick="dlChartPng()">⬇ 下载高清 PNG</button>
+          <span style="font-size:11px;color:var(--tx4)">完整图表（包含全部柱子）</span>
+        </div>
+      </div>
+    </div>
+    <!-- 按年份统计表 -->
+    <div class="card" id="year-stat-card">
+      <div class="ch"><div class="cstep done">✦</div><div class="ct">按确诊年份 × 亚型耐药谱统计</div>
+        <div class="csub" id="year-stat-hint"></div>
+      </div>
+      <div class="cb" id="year-stat-body"></div>
+      <div class="dlrow"><button class="btn bo" onclick="dlYearStat()">下载年份统计 CSV</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="ft">HIV Drug Resistance Comprehensive Analysis Platform · 2026</div>
+</main>
+</div>
+
+<script>
+/* ═══════════════════════════════════
+   STATE
+═══════════════════════════════════ */
+const DRUGS = ['pr','nrti','nnrti','insti'];
+const FILES = { pr:null, nrti:null, nnrti:null, insti:null, sub:null, tdr:null };
+const KB     = { pr:new Set(), nrti:new Set(), nnrti:new Set(), insti:new Set() };
+const KB_RAW = { pr:null, nrti:null, nnrti:null, insti:null };
+const KB_COLS= { pr:null, nrti:null, nnrti:null, insti:null };
+let kbLoaded = { pr:false, nrti:false, nnrti:false, insti:false };
+
+// resData[drug][treat][src][subtype] = { total:N, muts:{mut:count} }
+const resData = {};
+const tdrData = {};
+// yearData[drug][year][src][subtype] = { total:N, muts:{mut:count} }
+const yearData = {};
+const traceRows  = { pr:[], nrti:[], nnrti:[], insti:[] };
+const anomalyRows= { pr:[], nrti:[], nnrti:[], insti:[] };
+
+let resSrc='cdc', resTreat='pre', resDrug='pr';
+let tdrSrc='cdc', tdrTreat='pre', tdrDrug='pr';
+const curSub = { res:{}, tdr:{} };
+let cusSubLabel = '自定义分型';
+let tracePage = 0;
+const TRACE_PAGE_SIZE = () => parseInt(document.getElementById('trf-pagesize')?.value||25);
+let chartInstance = null;
+
+/* ═══════════════════════════════════
+   PAGE NAV
+═══════════════════════════════════ */
+function goPage(id) {
+  document.querySelectorAll('.spage').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nla').forEach(a=>a.classList.remove('on'));
+  document.querySelectorAll('.sbi').forEach(s=>s.classList.remove('on'));
+  document.getElementById('page-'+id)?.classList.add('on');
+  document.querySelector(`.nla[data-p="${id}"]`)?.classList.add('on');
+  document.getElementById('sb-'+id)?.classList.add('on');
+  if (id==='upload') document.getElementById('sb-upload').classList.add('on');
+  if (id==='result-trace') _renderTracePage();
+  if (id==='result-chart') renderChart();
+}
+
+/* ═══════════════════════════════════
+   CSV
+═══════════════════════════════════ */
+function pcsv(txt) {
+  return txt.split(/\r?\n/).map(line=>{
+    const r=[];let c='',q=false;
+    for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){q=!q;continue;}if(ch===','&&!q){r.push(c.trim());c='';continue;}c+=ch;}
+    r.push(c.trim());return r;
+  }).filter(r=>r.some(x=>x!==''));
+}
+function rcsv(rows){return rows.map(r=>r.map(c=>{const s=String(c??'');return(s.includes(',')||s.includes('"'))?`"${s.replace(/"/g,'""')}"`:s;}).join(',')).join('\r\n');}
+function dlcsv(rows,fn){const blob=new Blob(['\uFEFF'+rcsv(rows)],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=fn;a.click();URL.revokeObjectURL(url);}
+
+/* ═══════════════════════════════════
+   COL INDEX
+═══════════════════════════════════ */
+function ci(v){v=(v||'').trim().toUpperCase();if(!v)return -1;if(/^\d+$/.test(v))return parseInt(v)-1;let idx=0;for(let i=0;i<v.length;i++)idx=idx*26+(v.charCodeAt(i)-64);return idx-1;}
+function gcfg(k){const g=s=>document.getElementById(`${k}-${s}`)?.value||'';return{ct:ci(g('ct')),ms:ci(g('ms')),me:ci(g('me')),ss:ci(g('ss')),se:ci(g('se'))};}
+
+/* ═══════════════════════════════════
+   MUTATION NORMALIZATION
+═══════════════════════════════════ */
+function normalizeMut(s){
+  // For single-AA suffix: return as-is normalized
+  // For multi-AA suffix (mixed like M184IV): handled by expandMixedMut
+  s=(s||'').trim();
+  const std=s.match(/^([A-Za-z])(\d+)([A-Za-z*])$/);
+  if(std)return std[1].toUpperCase()+std[2]+std[3].toUpperCase();
+  return null;
+}
+
+/* expandMixedMut: parses strings like M184IV → [{orig:'M184IV', parts:['M184I','M184V']}]
+   Single muts like M184V → [{orig:'M184V', parts:['M184V']}]
+   Returns null if unrecognized format */
+function expandMixedMut(s){
+  s=(s||'').trim();
+  // Single AA: e.g. M184V
+  const std=s.match(/^([A-Za-z])(\d+)([A-Za-z*])$/);
+  if(std){const norm=std[1].toUpperCase()+std[2]+std[3].toUpperCase();return{orig:norm,parts:[norm]};}
+  // Mixed AA: e.g. M184IV (ref AA + pos + 2+ variant AAs)
+  const mix=s.match(/^([A-Za-z])(\d+)([A-Za-z]{2,})$/);
+  if(mix){
+    const ref=mix[1].toUpperCase(), pos=mix[2], aas=mix[3].toUpperCase();
+    const parts=aas.split('').map(aa=>ref+pos+aa);
+    return{orig:s.toUpperCase(), parts};
+  }
+  return null;
+}
+
+function getMutPos(m){const match=m.match(/\d+/);return match?parseInt(match[0]):99999;}
+
+function sortMutsByPosAndCount(mutCounts){
+  const byPos={};
+  for(const[m,n]of Object.entries(mutCounts)){const pos=getMutPos(m);if(!byPos[pos])byPos[pos]=[];byPos[pos].push([m,n]);}
+  for(const pos of Object.keys(byPos))byPos[pos].sort((a,b)=>b[1]-a[1]);
+  const sortedPos=Object.keys(byPos).map(Number).sort((a,b)=>a-b);
+  const result=[];
+  for(const pos of sortedPos){result.push({isGroup:true,pos});for(const item of byPos[pos])result.push({isGroup:false,mut:item[0],count:item[1]});}
+  return result;
+}
+
+/* ═══════════════════════════════════
+   DRAG & DROP
+═══════════════════════════════════ */
+function dzo(e,id){e.preventDefault();document.getElementById(id)?.classList.add('drag');}
+function dzl(e,id){document.getElementById(id)?.classList.remove('drag');}
+function kbDrop(e,drug){e.preventDefault();document.getElementById('kbuz-'+drug)?.classList.remove('drag');const f=e.dataTransfer?.files[0];if(f)doKbLoad(f,drug);}
+function kbLoad(inp,drug){if(inp.files[0])doKbLoad(inp.files[0],drug);}
+function dataDrop(e,key){e.preventDefault();document.getElementById('uz-'+key)?.classList.remove('drag');const f=e.dataTransfer?.files[0];if(f)doDataLoad(f,key);}
+function dataLoad(inp,key){if(inp.files[0])doDataLoad(inp.files[0],key);}
+
+/* ═══════════════════════════════════
+   KB LOADING
+═══════════════════════════════════ */
+function getKbThr(){return parseFloat(document.getElementById('kb-res-thr')?.value)||10;}
+function getSeqThr(){return parseFloat(document.getElementById('seq-res-thr')?.value)||10;}
+
+function refreshAllKbPreviews(){
+  for(const drug of DRUGS){if(KB_RAW[drug]&&KB_COLS[drug]){renderKbPreview(drug,KB_COLS[drug].start-1,KB_COLS[drug].end-1);}}
+}
+
+function doKbLoad(file,drug){
+  readFile(file,txt=>{
+    const rows=pcsv(txt);if(rows.length<2){alert('文件行数不足');return;}
+    KB_RAW[drug]=rows;
+    document.getElementById('kbuz-'+drug).classList.add('loaded');
+    document.getElementById('kbfn-'+drug).textContent=file.name;
+    showKbCfgCard(drug,rows);
+  });
+}
+
+function showKbCfgCard(drug,rows){
+  const area=document.getElementById('kb-cfgarea');area.style.display='';
+  const container=document.getElementById('kb-cfgcards');
+  const cardId='kb-cfgcard-'+drug;let card=document.getElementById(cardId);
+  if(!card){card=document.createElement('div');card.id=cardId;container.appendChild(card);}
+  const header=rows[0]||[];
+  const dnm={pr:'蛋白酶 PR',nrti:'核苷类 NRTI',nnrti:'非核苷类 NNRTI',insti:'整合酶 INSTI'}[drug];
+  const dclr={pr:'var(--bl)',nrti:'var(--gr)',nnrti:'var(--am)',insti:'var(--pk)'}[drug];
+  const sample=rows[1]||[];let firstScoreCol=1,lastScoreCol=header.length-1;
+  for(let i=1;i<sample.length;i++){if(!isNaN(parseFloat(sample[i]))&&sample[i]!==''){firstScoreCol=i;break;}}
+  for(let i=sample.length-1;i>=1;i--){if(!isNaN(parseFloat(sample[i]))&&sample[i]!==''){lastScoreCol=i;break;}}
+  if(!KB_COLS[drug])KB_COLS[drug]={start:firstScoreCol+1,end:lastScoreCol+1};
+  const startDef=KB_COLS[drug].start,endDef=KB_COLS[drug].end;
+  card.className='cfgbox';
+  card.innerHTML=`
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
+      <span style="font-size:11px;font-weight:600;color:${dclr}">${dnm}</span>
+      <span style="font-size:10px;color:var(--tx4)">${rows.length-1} 行突变记录</span>
+    </div>
+    <div style="font-size:10px;color:var(--tx3);margin-bottom:6px">
+      <strong>表头：</strong>${header.map((h,i)=>`<span style="font-family:monospace;background:var(--bg2);padding:1px 4px;border-radius:3px;margin:1px">[${i+1}] ${h||'—'}</span>`).join(' ')}
+    </div>
+    <div class="kbrange">
+      <label>药物评分列范围（列号）</label>
+      <input type="number" id="kbcol-start-${drug}" value="${startDef}" min="1" max="999" onchange="previewKb('${drug}')">
+      <span class="kbr-arrow">→</span>
+      <input type="number" id="kbcol-end-${drug}" value="${endDef}" min="1" max="999" onchange="previewKb('${drug}')">
+      <button class="btn bp" style="padding:4px 12px;font-size:11px;margin-left:4px" onclick="applyKb('${drug}')">✓ 确认判读</button>
+    </div>
+    <div class="kbr-result" id="kbr-result-${drug}">点击「确认判读」以应用 ≥${getKbThr()} 过滤</div>
+    <div style="margin-top:8px;max-height:160px;overflow-y:auto;border:1px solid var(--bd);border-radius:var(--r)">
+      <table class="kbprev" id="kbprev-${drug}">
+        <thead><tr><th>突变名</th>${header.slice(startDef-1,endDef).map(h=>`<th>${h||'—'}</th>`).join('')}<th>判读</th></tr></thead>
+        <tbody id="kbprev-body-${drug}"></tbody>
+      </table>
+    </div>`;
+  renderKbPreview(drug,startDef-1,endDef-1);
+}
+
+function previewKb(drug){
+  const s=parseInt(document.getElementById('kbcol-start-'+drug)?.value||2)-1;
+  const e=parseInt(document.getElementById('kbcol-end-'+drug)?.value||10)-1;
+  renderKbPreview(drug,s,e);
+}
+
+function renderKbPreview(drug,s,e){
+  if(!KB_RAW[drug])return;
+  const thr=getKbThr();const rows=KB_RAW[drug];const header=rows[0]||[];
+  const tbody=document.getElementById('kbprev-body-'+drug);
+  const thead=document.querySelector(`#kbprev-${drug} thead tr`);
+  if(!tbody||!thead)return;
+  thead.innerHTML=`<th>突变名</th>${header.slice(s,e+1).map(h=>`<th>${h||'—'}</th>`).join('')}<th>判读</th>`;
+  const data=rows.slice(1,21);
+  tbody.innerHTML=data.map(row=>{
+    const norm=normalizeMut((row[0]||'').trim())||(row[0]||'');
+    let isRes=false;const cells=[];
+    for(let c=s;c<=e&&c<row.length;c++){const v=parseFloat(row[c]);const hit=!isNaN(v)&&v>=thr;if(hit)isRes=true;cells.push(`<td class="${hit?'hl':''}">${row[c]||'—'}</td>`);}
+    return `<tr><td class="mut-col">${norm}</td>${cells.join('')}<td class="${isRes?'hl':''}">${isRes?'✓ 耐药':'—'}</td></tr>`;
+  }).join('')+(rows.length>21?`<tr><td colspan="99" style="text-align:center;color:var(--tx4);font-size:10px;padding:4px">… 仅显示前20行 …</td></tr>`:'');
+}
+
+function applyKb(drug){
+  const s=parseInt(document.getElementById('kbcol-start-'+drug)?.value||2)-1;
+  const e=parseInt(document.getElementById('kbcol-end-'+drug)?.value||10)-1;
+  if(!KB_RAW[drug])return;
+  KB_COLS[drug]={start:s+1,end:e+1};
+  const thr=getKbThr();const rows=KB_RAW[drug];const kbSet=new Set();
+  rows.slice(1).forEach(row=>{
+    const norm=normalizeMut((row[0]||'').trim());if(!norm)return;
+    for(let c=s;c<=e&&c<row.length;c++){if(parseFloat(row[c])>=thr){kbSet.add(norm);break;}}
+  });
+  KB[drug]=kbSet;kbLoaded[drug]=true;
+  document.getElementById('kbc-'+drug).textContent=kbSet.size+' 个耐药突变';
+  document.getElementById('kbi-'+drug).classList.add('ok');
+  const n=DRUGS.filter(k=>kbLoaded[k]).length;
+  document.getElementById('kb-badge').textContent=`${n} / 4 已确认`;
+  if(n>0)document.getElementById('s-kb').classList.add('done');
+  const resultEl=document.getElementById('kbr-result-'+drug);
+  if(resultEl)resultEl.innerHTML=`<strong style="color:var(--gr)">✓ 已应用：列 ${s+1}→${e+1}，阈值 ≥${thr}，共 ${kbSet.size} 个耐药突变</strong>`;
+  renderKbPreview(drug,s,e);
+}
+
+/* ═══════════════════════════════════
+   DATA FILE LOADING
+═══════════════════════════════════ */
+function doDataLoad(file,key){
+  readFile(file,txt=>{
+    FILES[key]={name:file.name,rows:pcsv(txt)};
+    document.getElementById('uz-'+key).classList.add('loaded');
+    document.getElementById('fn-'+key).textContent=file.name;
+    updateBadges();checkReady();
+  });
+}
+function readFile(file,cb){const r=new FileReader();r.onload=e=>cb(e.target.result);r.readAsText(file,'UTF-8');}
+
+function updateBadges(){
+  const dn=DRUGS.filter(k=>FILES[k]).length;
+  const an=['sub','tdr'].filter(k=>FILES[k]).length;
+  document.getElementById('drug-badge').textContent=`${dn} / 4 已载入`;
+  document.getElementById('aux-badge').textContent=`${an} / 2 已载入`;
+  if(dn>0)document.getElementById('s-drug').classList.add('done');
+  if(an>0)document.getElementById('s-aux').classList.add('done');
+}
+function checkReady(){
+  const ok=DRUGS.some(d=>FILES[d])&&FILES.sub;
+  document.getElementById('btnrun').disabled=!ok;
+  document.getElementById('rhint').textContent=ok?'就绪，点击开始处理':'需要：至少1个耐药文件 + 亚型文件';
+}
+
+/* ═══════════════════════════════════
+   LOGGER
+═══════════════════════════════════ */
+function gt(){return new Date().toLocaleTimeString('zh-CN',{hour12:false});}
+function log(m,t='info'){const b=document.getElementById('logb');const d=document.createElement('div');d.className='ll';d.innerHTML=`<span class="lt">[${gt()}]</span><span class="lm ${t}">${m}</span>`;b.appendChild(d);b.scrollTop=b.scrollHeight;}
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ═══════════════════════════════════
+   GET MUTS FROM ROW
+═══════════════════════════════════ */
+// MutEntry = { orig: string, parts: string[] }
+// orig = display form (e.g. 'M184IV'), parts = expanded single-AA muts for KB lookup
+function getMutsFromRow(row,ms,me){
+  const tokens=[];
+  for(let i=ms;i<=me;i++){const v=(row[i]||'').trim();if(v)tokens.push(v);}
+  const entries=[];
+  tokens.join(',').split(',').forEach(t=>{
+    t=t.trim();if(!t)return;
+    const ex=expandMixedMut(t);if(ex)entries.push(ex);
+  });
+  return entries;
+}
+function parseTdrStr(s){
+  if(!s||s.trim().toLowerCase()==='none'||s.trim()==='')return[];
+  const entries=[];
+  s.split(/[,;+\/\s]+/).forEach(t=>{
+    t=t.trim();if(!t)return;
+    const ex=expandMixedMut(t);if(ex)entries.push(ex);
+  });
+  // For TDR we return flat normalized muts (no mixed-mut merging needed)
+  return entries.map(e=>e.parts).flat();
+}
+
+/* ═══════════════════════════════════
+   PARSE YEAR FROM DATE STRING
+   格式：2021/1/5 或 2021-01-05 等
+═══════════════════════════════════ */
+function parseYear(s){
+  if(!s||s.trim()==='')return null;
+  const m=String(s).trim().match(/^(\d{4})/);
+  return m?m[1]:null;
+}
+
+/* ═══════════════════════════════════
+   GET COUNTED MUTS — 新逻辑
+   
+   情况1：序列任意药物≥seqThr → 分析突变谱
+     对每个突变，若该突变在KB中任意药物≥kbThr → 计入一次
+     若所有突变均不满足 → 异常序列
+   情况2：无KB → 统计所有突变
+═══════════════════════════════════ */
+/* getCountedMuts
+   mutEntries: array of {orig, parts} from getMutsFromRow
+   
+   For each entry:
+   - Find which parts are in KB (>=kbThr already baked into KB set)
+   - If ALL parts in KB → use orig form (e.g. M184IV)
+   - If SOME parts in KB → use only those parts (e.g. M184I)
+   - If NO parts in KB → skip this entry
+   
+   anomaly = true if no entries contributed any counted mut
+*/
+function getCountedMuts(mutEntries,drug){
+  const useKB=kbLoaded[drug]&&KB[drug].size>0;
+
+  if(!useKB){
+    // No KB: use orig form for display, dedup by orig
+    const seen=new Set();
+    const counted=[];
+    mutEntries.forEach(e=>{if(!seen.has(e.orig)){seen.add(e.orig);counted.push(e.orig);}});
+    return{counted,anomaly:false};
+  }
+
+  const counted=[];
+  const seen=new Set();
+
+  mutEntries.forEach(e=>{
+    const kbParts=e.parts.filter(p=>KB[drug].has(p));
+    if(!kbParts.length)return; // none in KB, skip
+    
+    let label;
+    if(kbParts.length===e.parts.length){
+      // ALL parts are in KB → use original mixed form (e.g. M184IV)
+      label=e.orig;
+    } else {
+      // Only SOME parts in KB → list those individual muts
+      // (e.g. M184IV but only M184I in KB → label = 'M184I')
+      label=kbParts.join('/');
+    }
+    if(!seen.has(label)){seen.add(label);counted.push(label);}
+  });
+
+  const anomaly=counted.length===0;
+  return{counted,anomaly};
+}
+
+/* ═══════════════════════════════════
+   MAIN ANALYSIS
+═══════════════════════════════════ */
+async function runAll(){
+  const thr=parseInt(document.getElementById('threshold').value)||30;
+  const seqResThr=getSeqThr();
+  document.getElementById('logp').classList.add('on');
+  document.getElementById('logb').innerHTML='';
+  document.getElementById('ldot').classList.remove('done');
+  document.getElementById('lstatus').textContent='处理中...';
+  document.getElementById('btnrun').disabled=true;
+  log('开始全量处理...','info');await delay(80);
+
+  // 1. 亚型 Map
+  const subMap={};
+  const cusColIdx=ci(document.getElementById('sub-cus').value);
+  const cusName=(document.getElementById('sub-cus-name').value||'').trim();
+  const hasCus=cusColIdx>=0&&cusName;
+  cusSubLabel=hasCus?cusName:'自定义分型';
+
+  if(FILES.sub){
+    const sid=ci(document.getElementById('sub-id').value);
+    const sdate=ci(document.getElementById('sub-date').value);
+    const scdc=ci(document.getElementById('sub-cdc').value);
+    const sman=ci(document.getElementById('sub-man').value);
+    FILES.sub.rows.slice(1).forEach(row=>{
+      const id=(row[sid]||'').trim();if(!id)return;
+      subMap[id]={
+        date:(row[sdate]||'').trim(),
+        year:parseYear(row[sdate]),
+        cdc:(row[scdc]||'').trim()||'未知',
+        man:(row[sman]||'').trim()||'未知',
+        cus:hasCus?((row[cusColIdx]||'').trim()||'未知'):null
+      };
+    });
+    log(`亚型：${Object.keys(subMap).length} 条${hasCus?`（含自定义列"${cusName}"）`:''}，含年份解析`,'ok');await delay(80);
+  }
+
+  updateCusSourceButtons(hasCus);
+
+  // 2. 治疗标签 Map
+  const treatMap={};
+
+  // 3. 初始化结构
+  const srcs=hasCus?['cdc','man','cus']:['cdc','man'];
+  for(const drug of DRUGS){
+    resData[drug]={};tdrData[drug]={};yearData[drug]={};
+    for(const t of['pre','post']){resData[drug][t]={};tdrData[drug][t]={};for(const s of srcs){resData[drug][t][s]={};tdrData[drug][t][s]={};}}
+    traceRows[drug]=[];anomalyRows[drug]=[];
+  }
+
+  // 4. 处理耐药文件
+  for(const drug of DRUGS){
+    if(!FILES[drug])continue;
+    const cfg=gcfg(drug);
+    const data=FILES[drug].rows.slice(1);
+    let resTotal=0,noSub=0,anomalyCount=0;
+
+    data.forEach(row=>{
+      const id=(row[0]||'').trim();
+      const tv=parseFloat(row[cfg.ct]);
+      const treat=isNaN(tv)?null:(tv>=thr?'post':'pre');
+      if(!treat)return;
+      if(id)treatMap[id]=treat;
+
+      // 判断是否耐药
+      let isRes=false;
+      for(let i=cfg.ss;i<=cfg.se;i++){if(parseFloat(row[i])>=seqResThr){isRes=true;break;}}
+      if(!isRes)return;
+      resTotal++;
+
+      const sub=subMap[id];
+      if(!sub){noSub++;return;}
+
+      const mutEntries=getMutsFromRow(row,cfg.ms,cfg.me);
+      const rawMuts=mutEntries.map(e=>e.orig); // display form (e.g. M184IV)
+      const{counted,anomaly}=getCountedMuts(mutEntries,drug);
+
+      traceRows[drug].push({id,treat,subCdc:sub.cdc,subMan:sub.man,subCus:sub.cus,year:sub.year,rawMuts,counted,isRes:true,anomaly});
+
+      if(anomaly){
+        anomalyCount++;
+        anomalyRows[drug].push({id,treat,subCdc:sub.cdc,subMan:sub.man,subCus:sub.cus,year:sub.year,rawMuts});
+        return;
+      }
+
+      // 按 treat × src 统计
+      for(const src of srcs){
+        const subtype=src==='cdc'?sub.cdc:src==='man'?sub.man:sub.cus;
+        if(!subtype)continue;
+        if(!resData[drug][treat][src][subtype])resData[drug][treat][src][subtype]={total:0,muts:{}};
+        resData[drug][treat][src][subtype].total++;
+        counted.forEach(m=>{resData[drug][treat][src][subtype].muts[m]=(resData[drug][treat][src][subtype].muts[m]||0)+1;});
+      }
+
+      // 按年份统计（用cdc分型）
+      const yr=sub.year||'未知';
+      const subCdc=sub.cdc;
+      if(!yearData[drug][yr])yearData[drug][yr]={};
+      if(!yearData[drug][yr][subCdc])yearData[drug][yr][subCdc]={total:0,muts:{}};
+      yearData[drug][yr][subCdc].total++;
+      counted.forEach(m=>{yearData[drug][yr][subCdc].muts[m]=(yearData[drug][yr][subCdc].muts[m]||0)+1;});
+    });
+
+    const dnm={pr:'蛋白酶',nrti:'核苷类',nnrti:'非核苷类',insti:'整合酶'}[drug];
+    const kbInfo=kbLoaded[drug]?`（KB ${KB[drug].size} 个耐药突变，阈值≥${seqResThr}，异常 ${anomalyCount} 例）`:'（无KB，统计全部突变）';
+    log(`${dnm}：耐药 ${resTotal} 例，未匹配亚型 ${noSub} 例 ${kbInfo}`,'ok');
+    if(anomalyCount>0)log(`${dnm}：⚠️ ${anomalyCount} 例异常序列（耐药但无KB匹配突变）`,'warn');
+    await delay(80);
+  }
+
+  // 5. 处理 TDR
+  if(FILES.tdr){
+    const tid=ci(document.getElementById('tdr-id').value);
+    const tcols={pr:ci(document.getElementById('tdr-pr').value),nrti:ci(document.getElementById('tdr-nrti').value),nnrti:ci(document.getElementById('tdr-nnrti').value),insti:ci(document.getElementById('tdr-insti').value)};
+    let tdrTotal=0;
+    FILES.tdr.rows.slice(1).forEach(row=>{
+      const id=(row[tid]||'').trim();if(!id)return;
+      const treat=treatMap[id];if(!treat)return;
+      const sub=subMap[id];if(!sub)return;
+      let hasAny=false;
+      for(const drug of DRUGS){
+        const muts=parseTdrStr(row[tcols[drug]]);if(!muts.length)continue;
+        hasAny=true;
+        for(const src of srcs){
+          const subtype=src==='cdc'?sub.cdc:src==='man'?sub.man:sub.cus;if(!subtype)continue;
+          if(!tdrData[drug][treat][src][subtype])tdrData[drug][treat][src][subtype]={total:0,muts:{}};
+          tdrData[drug][treat][src][subtype].total++;
+          muts.forEach(m=>{tdrData[drug][treat][src][subtype].muts[m]=(tdrData[drug][treat][src][subtype].muts[m]||0)+1;});
+        }
+      }
+      if(hasAny)tdrTotal++;
+    });
+    log(`TDR：携带传播耐药突变 ${tdrTotal} 例`,'ok');await delay(80);
+  }
+
+  log('✓ 全部完成！','ok');
+  document.getElementById('ldot').classList.add('done');
+  document.getElementById('lstatus').textContent='处理完成';
+  document.getElementById('btnrun').disabled=false;
+
+  renderResSummary();renderTdrSummary();showResultCards();showAnomalySection();
+  renderResContent();renderTdrContent();
+  populateChartSelectors();
+  await delay(300);renderTrace();
+  goPage('result-res');
+}
+
+/* ═══════════════════════════════════
+   ANOMALY
+═══════════════════════════════════ */
+function showAnomalySection(){
+  const section=document.getElementById('anomaly-section');
+  const btnsEl=document.getElementById('anomaly-btns');
+  const dnmMap={pr:'蛋白酶PR',nrti:'核苷类NRTI',nnrti:'非核苷类NNRTI',insti:'整合酶INSTI'};
+  const hasAny=DRUGS.some(d=>anomalyRows[d].length>0);
+  if(!hasAny){if(section)section.style.display='none';return;}
+  if(section)section.style.display='';
+  btnsEl.innerHTML=DRUGS.map(drug=>{
+    const n=anomalyRows[drug].length;if(!n)return'';
+    return`<button class="btn bo" onclick="dlAnomaly('${drug}')">⬇ 下载${dnmMap[drug]}异常序列 (${n} 例)</button>`;
+  }).join('');
+}
+
+function dlAnomaly(drug){
+  const rows=anomalyRows[drug];if(!rows.length)return;
+  const dnm={pr:'蛋白酶PR',nrti:'核苷类NRTI',nnrti:'非核苷类NNRTI',insti:'整合酶INSTI'}[drug];
+  const hasCusData=rows.some(r=>r.subCus!==null&&r.subCus!==undefined);
+  const headers=['序列ID','药物类别','治疗状态','确诊年份','亚型(中疾控)','亚型(人工)',...(hasCusData?[`亚型(${cusSubLabel})`]:[]),'原始突变列表','异常原因'];
+  const out=[headers,...rows.map(r=>[r.id,dnm,r.treat==='pre'?'治疗前':'治疗后',r.year||'',r.subCdc,r.subMan,...(hasCusData?[r.subCus||'']:[]),r.rawMuts.join(';'),'耐药序列但所有突变均低于KB阈值'])];
+  dlcsv(out,`anomaly_${drug}.csv`);
+}
+
+/* ═══════════════════════════════════
+   SHOW RESULT CARDS
+═══════════════════════════════════ */
+function showResultCards(){
+  ['res-summary-card','res-main-card','res-dlrow'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='';});
+  document.getElementById('res-empty').style.display='none';
+  if(FILES.tdr){
+    ['tdr-summary-card','tdr-main-card','tdr-dlrow'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='';});
+    document.getElementById('tdr-empty').style.display='none';
+  }
+  ['res','tdr','trace','chart'].forEach(s=>{
+    const el=document.getElementById('sb-result-'+s);if(el)el.classList.add('done');
+  });
+  document.getElementById('trace-empty').style.display='none';
+  document.getElementById('trace-main').style.display='';
+  document.getElementById('chart-empty').style.display='none';
+  document.getElementById('chart-main').style.display='';
+}
+
+function updateCusSourceButtons(hasCus){
+  for(const prefix of['res','tdr']){
+    const btn=document.getElementById(`${prefix}-src-cus`);
+    if(btn){btn.style.display=hasCus?'':'none';btn.textContent=cusSubLabel;}
+  }
+  // chart src
+  const chSrc=document.getElementById('ch-src');
+  if(chSrc){
+    const existing=chSrc.querySelector('option[value="cus"]');
+    if(hasCus&&!existing){const opt=document.createElement('option');opt.value='cus';opt.textContent=cusSubLabel;chSrc.appendChild(opt);}
+    else if(!hasCus&&existing)existing.remove();
+  }
+}
+
+/* ═══════════════════════════════════
+   SUMMARY
+═══════════════════════════════════ */
+function sumDrug(data,drug,treat){return Object.values(data[drug]?.[treat]?.cdc||{}).reduce((s,v)=>s+v.total,0);}
+function renderResSummary(){
+  const pre=DRUGS.map(d=>sumDrug(resData,d,'pre'));
+  const post=DRUGS.map(d=>sumDrug(resData,d,'post'));
+  document.getElementById('res-summary-body').innerHTML=`<div class="sum-grid">
+    <div class="scard"><div class="sv" style="color:var(--am)">${pre.reduce((a,b)=>a+b,0)}</div><div class="sl">治疗前·耐药序列</div><div class="ss">PR ${pre[0]} / NRTI ${pre[1]} / NNRTI ${pre[2]} / INSTI ${pre[3]}</div></div>
+    <div class="scard"><div class="sv" style="color:var(--bl)">${post.reduce((a,b)=>a+b,0)}</div><div class="sl">治疗后·耐药序列</div><div class="ss">PR ${post[0]} / NRTI ${post[1]} / NNRTI ${post[2]} / INSTI ${post[3]}</div></div>
+  </div>`;
+}
+function renderTdrSummary(){
+  if(!FILES.tdr)return;
+  const pre=DRUGS.map(d=>sumDrug(tdrData,d,'pre'));
+  const post=DRUGS.map(d=>sumDrug(tdrData,d,'post'));
+  document.getElementById('tdr-summary-body').innerHTML=`<div class="sum-grid">
+    <div class="scard"><div class="sv" style="color:var(--am)">${pre.reduce((a,b)=>a+b,0)}</div><div class="sl">治疗前·TDR序列</div><div class="ss">PR ${pre[0]} / NRTI ${pre[1]} / NNRTI ${pre[2]} / INSTI ${pre[3]}</div></div>
+    <div class="scard"><div class="sv" style="color:var(--pu)">${post.reduce((a,b)=>a+b,0)}</div><div class="sl">治疗后·TDR序列</div><div class="ss">PR ${post[0]} / NRTI ${post[1]} / NNRTI ${post[2]} / INSTI ${post[3]}</div></div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════
+   CONTENT RENDER
+═══════════════════════════════════ */
+function renderResContent(){renderContent('res',resData,resDrug,resTreat,resSrc,'bl');}
+function renderTdrContent(){renderContent('tdr',tdrData,tdrDrug,tdrTreat,tdrSrc,'pu');}
+
+function renderContent(prefix,data,drug,treat,src,color){
+  const el=document.getElementById(`${prefix}-content`);
+  const subtypeMap=data[drug]?.[treat]?.[src]||{};
+  const subtypes=Object.keys(subtypeMap).sort();
+  if(!subtypes.length){el.innerHTML=`<div class="empty"><div class="empty-ico">🔍</div>当前条件下无数据</div>`;return;}
+  const key=`${prefix}-${drug}-${treat}-${src}`;
+  if(!curSub[prefix][key]||!subtypeMap[curSub[prefix][key]])curSub[prefix][key]=subtypes[0];
+  const sel=curSub[prefix][key];
+  const total=subtypes.reduce((s,k)=>s+subtypeMap[k].total,0);
+  el.innerHTML=`
+    <div style="margin-bottom:11px;display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+      <span class="chip c${color==='bl'?'bl':'pu'}">${color==='bl'?'耐药':'TDR'}序列总数：${total}</span>
+      <span class="chip ca">亚型：${subtypes.length} 种</span>
+    </div>
+    <div class="res-layout">
+      <div class="fp"><div class="fph">亚型列表</div>
+        ${subtypes.map(s=>`<div class="fpi${s===sel?' on':''}" data-sub="${esc(s)}" data-prefix="${prefix}" data-drug="${drug}" data-treat="${treat}" data-src="${src}" data-color="${color}" onclick="selSubFromEl(this)">
+          <span class="fpname">${esc(s)}</span><span class="fpcnt">${subtypeMap[s].total}例</span></div>`).join('')}
+      </div>
+      <div class="mutp" id="${prefix}-mutp">${buildMutTable(subtypeMap[sel],sel,color)}</div>
+    </div>`;
+}
+
+function buildMutTable(sd,subName,color){
+  if(!sd)return`<div class="empty"><div class="empty-ico">👆</div>点击左侧亚型</div>`;
+  const sorted=sortMutsByPosAndCount(sd.muts);
+  const mutItems=sorted.filter(x=>!x.isGroup);
+  const maxV=mutItems.length?Math.max(...mutItems.map(x=>x.count)):1;
+  let h=`<div class="mutph"><span style="font-size:13px;font-weight:600;color:var(--tx)">${esc(subName)}</span>
+    <span class="chip c${color==='bl'?'bl':'pu'}">${sd.total} 例</span><span class="chip ca">${mutItems.length} 种突变</span></div>`;
+  if(!mutItems.length)return h+`<div class="empty"><div class="empty-ico">🔍</div>该亚型暂无突变数据</div>`;
+  h+=`<div class="tblwrap"><table class="rtbl"><thead><tr><th style="width:32px">#</th><th>突变</th><th class="pw">出现次数</th></tr></thead><tbody>`;
+  let rank=0;
+  sorted.forEach(item=>{
+    if(item.isGroup){h+=`<tr class="pos-sep"><td colspan="3"><span class="pos-lbl">位点 ${item.pos}</span></td></tr>`;}
+    else{rank++;const pct=Math.round(item.count/maxV*100);h+=`<tr><td class="rn">${rank}</td><td><span class="mn">${esc(item.mut)}</span></td><td class="pw"><div class="pg"><div class="pb"><div class="pf ${color}" style="width:${pct}%"></div></div><span class="pv">${item.count}</span></div></td></tr>`;}
+  });
+  return h+'</tbody></table></div>';
+}
+
+function selSubFromEl(el){selSub(el.dataset.prefix,el.dataset.sub,el.dataset.drug,el.dataset.treat,el.dataset.src,el.dataset.color);}
+function selSub(prefix,sub,drug,treat,src,color){
+  const key=`${prefix}-${drug}-${treat}-${src}`;curSub[prefix][key]=sub;
+  document.getElementById(`${prefix}-content`)?.querySelectorAll('.fpi').forEach(item=>item.classList.toggle('on',item.dataset.sub===sub));
+  const data=prefix==='res'?resData:tdrData;
+  const sd=data[drug]?.[treat]?.[src]?.[sub];
+  const panel=document.getElementById(`${prefix}-mutp`);
+  if(panel)panel.innerHTML=buildMutTable(sd,sub,color);
+}
+
+function setResSrc(s){resSrc=s;['cdc','man','cus'].forEach(x=>document.getElementById('res-src-'+x)?.classList.toggle('on',x===s));renderResContent();}
+function setResTreat(t){resTreat=t;document.querySelectorAll('#res-treat-tabs .tab').forEach(el=>el.classList.toggle('on',el.dataset.t===t));renderResContent();}
+function setResDrug(d){resDrug=d;document.querySelectorAll('#res-drug-tabs .tab').forEach(el=>el.classList.toggle('on',el.dataset.d===d));renderResContent();}
+function setTdrSrc(s){tdrSrc=s;['cdc','man','cus'].forEach(x=>document.getElementById('tdr-src-'+x)?.classList.toggle('on',x===s));renderTdrContent();}
+function setTdrTreat(t){tdrTreat=t;document.querySelectorAll('#tdr-treat-tabs .tab').forEach(el=>el.classList.toggle('on',el.dataset.t===t));renderTdrContent();}
+function setTdrDrug(d){tdrDrug=d;document.querySelectorAll('#tdr-drug-tabs .tab').forEach(el=>el.classList.toggle('on',el.dataset.d===d));renderTdrContent();}
+
+/* ═══════════════════════════════════
+   TRACE
+═══════════════════════════════════ */
+function getTraceFiltered(){
+  const drug=document.getElementById('trf-drug')?.value||'pr';
+  const treat=document.getElementById('trf-treat')?.value||'all';
+  const res=document.getElementById('trf-res')?.value||'res';
+  let rows=traceRows[drug]||[];
+  if(treat!=='all')rows=rows.filter(r=>r.treat===treat);
+  if(res==='res')rows=rows.filter(r=>r.isRes&&!r.anomaly);
+  else if(res==='anomaly')rows=rows.filter(r=>r.anomaly);
+  return{rows,drug};
+}
+function tracePageReset(){tracePage=0;renderTrace();}
+function tracePagePrev(){tracePage=Math.max(0,tracePage-1);renderTrace();}
+function tracePageNext(){const{rows}=getTraceFiltered();const ps=TRACE_PAGE_SIZE();tracePage=Math.min(tracePage+1,Math.floor((rows.length-1)/ps));renderTrace();}
+function renderTrace(){tracePage=0;_renderTracePage();}
+function _renderTracePage(){
+  const{rows,drug}=getTraceFiltered();
+  const ps=TRACE_PAGE_SIZE();
+  const pageRows=rows.slice(tracePage*ps,(tracePage+1)*ps);
+  const totalHint=document.getElementById('trace-total-hint');
+  if(totalHint)totalHint.textContent=`${rows.length} 条记录`;
+  const tbody=document.getElementById('trace-tbody');if(!tbody)return;
+  if(!rows.length){
+    tbody.innerHTML=`<tr><td colspan="5" class="empty">当前筛选条件下无记录</td></tr>`;
+    document.getElementById('trace-pager-info').textContent='0 / 0 页';
+    document.getElementById('trace-count-hint').textContent='';
+    document.getElementById('trace-prev').disabled=true;document.getElementById('trace-next').disabled=true;return;
+  }
+  tbody.innerHTML=pageRows.map(r=>{
+    const treatChip=r.treat==='pre'?`<span class="chip ca">治疗前</span>`:`<span class="chip cbl">治疗后</span>`;
+    if(r.anomaly){
+      const mutTags=r.rawMuts.map(m=>`<span class="mut-tag skip" title="低于KB阈值">${esc(m)}</span>`).join('');
+      return`<tr style="background:var(--rdl)"><td><span class="trace-id">${esc(r.id)}</span></td><td>${treatChip}</td><td><span class="trace-sub">${esc(r.subCdc)}</span></td>
+        <td><div class="trace-counted">${mutTags}<span class="mut-arrow">→</span><span style="font-size:10px;color:var(--rd);font-weight:600">⚠ 异常序列（已排除）</span></div></td>
+        <td style="text-align:center;color:var(--rd);font-weight:600">—</td></tr>`;
+    }
+    const countedSet=new Set(r.counted);
+    const mutTags=r.rawMuts.map(m=>`<span class="mut-tag ${countedSet.has(m)?'res':'skip'}" title="${countedSet.has(m)?'已计入':'低于KB阈值'}">${esc(m)}</span>`).join('');
+    const countedTags=r.counted.length?r.counted.map(m=>`<span class="mut-tag res">${esc(m)}</span>`).join(''):`<span style="font-size:10px;color:var(--tx4)">无耐药突变</span>`;
+    return`<tr><td><span class="trace-id">${esc(r.id)}</span></td><td>${treatChip}</td><td><span class="trace-sub">${esc(r.subCdc)}</span></td>
+      <td><div class="trace-counted">${mutTags}<span class="mut-arrow">→</span>${countedTags}</div></td>
+      <td style="text-align:center;font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--bl)">${r.counted.length}</td></tr>`;
+  }).join('');
+  const totalPages=Math.ceil(rows.length/ps)||1;
+  document.getElementById('trace-pager-info').textContent=`第 ${tracePage+1} / ${totalPages} 页`;
+  document.getElementById('trace-count-hint').textContent=`共 ${rows.length} 条·本页 ${pageRows.length} 条`;
+  document.getElementById('trace-prev').disabled=tracePage===0;
+  document.getElementById('trace-next').disabled=tracePage>=totalPages-1;
+}
+
+function dlTrace(){
+  const{rows,drug}=getTraceFiltered();
+  const dnm={pr:'蛋白酶PR',nrti:'核苷类NRTI',nnrti:'非核苷类NNRTI',insti:'整合酶INSTI'}[drug];
+  const headers=['序列ID','药物类别','治疗状态','确诊年份','亚型(中疾控)','亚型(人工)',`亚型(${cusSubLabel})`,'原始突变列表','耐药突变','耐药突变数'];
+  const out=[headers,...rows.map(r=>[r.id,dnm,r.treat==='pre'?'治疗前':'治疗后',r.year||'',r.subCdc,r.subMan,r.subCus||'',r.rawMuts.join(';'),r.counted.join(';'),r.counted.length])];
+  dlcsv(out,`trace_${drug}_filtered.csv`);
+}
+function dlTraceAll(){
+  const headers=['序列ID','药物类别','治疗状态','确诊年份','亚型(中疾控)','亚型(人工)',`亚型(${cusSubLabel})`,'原始突变列表','耐药突变','耐药突变数'];
+  const out=[headers];
+  for(const drug of DRUGS){const dnm={pr:'蛋白酶PR',nrti:'核苷类NRTI',nnrti:'非核苷类NNRTI',insti:'整合酶INSTI'}[drug];
+    for(const r of(traceRows[drug]||[]))out.push([r.id,dnm,r.treat==='pre'?'治疗前':'治疗后',r.year||'',r.subCdc,r.subMan,r.subCus||'',r.rawMuts.join(';'),r.counted.join(';'),r.counted.length]);
+  }
+  dlcsv(out,'trace_all.csv');
+}
+
+/* ═══════════════════════════════════
+   DOWNLOAD
+═══════════════════════════════════ */
+function buildAllRows(dataObj,label){
+  const rows=[['分析类别','药物类别','治疗状态','分型来源','亚型','序列数','突变','出现次数']];
+  for(const drug of DRUGS){
+    const dnm={pr:'蛋白酶PR',nrti:'核苷类NRTI',nnrti:'非核苷类NNRTI',insti:'整合酶INSTI'}[drug];
+    for(const treat of['pre','post']){const tnm=treat==='pre'?'治疗前':'治疗后';
+      for(const src of['cdc','man','cus']){
+        const srcData=dataObj[drug]?.[treat]?.[src];if(!srcData||!Object.keys(srcData).length)continue;
+        const snm=src==='cdc'?'中疾控C列':src==='man'?'人工分型G列':cusSubLabel;
+        for(const[sub,sd]of Object.entries(srcData)){
+          const sorted=sortMutsByPosAndCount(sd.muts).filter(x=>!x.isGroup);
+          if(!sorted.length){rows.push([label,dnm,tnm,snm,sub,sd.total,'（无突变数据）','']);continue;}
+          sorted.forEach(item=>rows.push([label,dnm,tnm,snm,sub,sd.total,item.mut,item.count]));
+        }
+      }
+    }
+  }
+  return rows;
+}
+function buildCurRows(dataObj,drug,treat,src,label){
+  const rows=[['分析类别','药物类别','治疗状态','分型来源','亚型','序列数','突变','出现次数']];
+  const dnm={pr:'蛋白酶PR',nrti:'核苷类NRTI',nnrti:'非核苷类NNRTI',insti:'整合酶INSTI'}[drug];
+  const tnm=treat==='pre'?'治疗前':'治疗后';
+  const snm=src==='cdc'?'中疾控C列':src==='man'?'人工分型G列':cusSubLabel;
+  for(const[sub,sd]of Object.entries(dataObj[drug]?.[treat]?.[src]||{})){
+    const sorted=sortMutsByPosAndCount(sd.muts).filter(x=>!x.isGroup);
+    sorted.forEach(item=>rows.push([label,dnm,tnm,snm,sub,sd.total,item.mut,item.count]));
+  }
+  return rows;
+}
+function dlRes(){dlcsv(buildCurRows(resData,resDrug,resTreat,resSrc,'耐药突变'),`res_${resDrug}_${resTreat}_${resSrc}.csv`);}
+function dlResAll(){dlcsv(buildAllRows(resData,'耐药突变'),'res_all.csv');}
+function dlTdr(){dlcsv(buildCurRows(tdrData,tdrDrug,tdrTreat,tdrSrc,'TDR'),`tdr_${tdrDrug}_${tdrTreat}_${tdrSrc}.csv`);}
+function dlTdrAll(){dlcsv(buildAllRows(tdrData,'TDR传播耐药'),'tdr_all.csv');}
+
+/* ═══════════════════════════════════
+   CHART — 可视化模块
+═══════════════════════════════════ */
+// 位点调色板：同一位点不同突变用同色系不同深度
+const PALETTE=[
+  ['#1d5fa8','#2470c2','#5a9fd4','#8dbce3','#b8d5ef'],
+  ['#1e7a48','#28a05e','#5dbf88','#8fd4ab','#b8e5cc'],
+  ['#9a5a10','#c4760f','#e8a840','#f0c470','#f8dfa0'],
+  ['#6030a0','#7c40c8','#a070d8','#bea0e8','#d8c8f4'],
+  ['#b02828','#d43030','#e07070','#eca0a0','#f4cccc'],
+  ['#0a7870','#0d9b92','#40bcb4','#80d4ce','#b4e8e4'],
+  ['#a0286a','#c83088','#d870ac','#e8a0cc','#f4ccdf'],
+];
+
+function populateChartSelectors(){
+  const yearSel=document.getElementById('ch-year');
+  if(!yearSel)return;
+  // collect all years across all drugs
+  const allYears=new Set();
+  for(const drug of DRUGS)for(const yr of Object.keys(yearData[drug]||{}))allYears.add(yr);
+  const sortedYears=[...allYears].filter(y=>y!=='未知').sort().concat(allYears.has('未知')?['未知']:[]);
+  yearSel.innerHTML=`<option value="all">全部年份</option>`+sortedYears.map(y=>`<option value="${y}">${y}</option>`).join('');
+  updateChartSubOptions();
+}
+
+function updateChartSubOptions(){
+  const drug=document.getElementById('ch-drug')?.value||'pr';
+  const yr=document.getElementById('ch-year')?.value||'all';
+  const src=document.getElementById('ch-src')?.value||'cdc';
+  const treat=document.getElementById('ch-treat')?.value||'all';
+  
+  // collect subtypes from resData
+  const subtypeSet=new Set(['全部亚型']);
+  const data=resData[drug]||{};
+  for(const t of(treat==='all'?['pre','post']:[treat])){
+    for(const sub of Object.keys(data[t]?.[src]||{}))subtypeSet.add(sub);
+  }
+  // also filter by year via traceRows
+  if(yr!=='all'){
+    const validIds=new Set(traceRows[drug].filter(r=>r.year===yr&&!r.anomaly).map(r=>r.id));
+    // Can't easily filter resData by year without reprocessing, so just show all subtypes for now
+  }
+  
+  const subSel=document.getElementById('ch-sub');
+  if(!subSel)return;
+  const prev=subSel.value;
+  subSel.innerHTML=[...subtypeSet].sort((a,b)=>a==='全部亚型'?-1:b==='全部亚型'?1:a.localeCompare(b)).map(s=>`<option value="${s}">${s}</option>`).join('');
+  if([...subtypeSet].includes(prev))subSel.value=prev;
+  renderChart();
+}
+
+function renderChart(){
+  const drug=document.getElementById('ch-drug')?.value||'pr';
+  const yr=document.getElementById('ch-year')?.value||'all';
+  const treat=document.getElementById('ch-treat')?.value||'all';
+  const subtype=document.getElementById('ch-sub')?.value||'全部亚型';
+  const chartType=document.getElementById('ch-type')?.value||'bar';
+  const src=document.getElementById('ch-src')?.value||'cdc';
+  
+  // Aggregate mutation counts
+  // If year != all, we need to filter traceRows by year and recount
+  let mutCounts={};
+  let totalSeqs=0;
+
+  if(yr==='all'){
+    // use resData directly
+    const treats=treat==='all'?['pre','post']:[treat];
+    for(const t of treats){
+      const srcData=resData[drug]?.[t]?.[src]||{};
+      if(subtype==='全部亚型'){
+        for(const[,sd]of Object.entries(srcData)){
+          totalSeqs+=sd.total;
+          for(const[m,n]of Object.entries(sd.muts))mutCounts[m]=(mutCounts[m]||0)+n;
+        }
+      } else if(srcData[subtype]){
+        totalSeqs+=srcData[subtype].total;
+        for(const[m,n]of Object.entries(srcData[subtype].muts))mutCounts[m]=(mutCounts[m]||0)+n;
+      }
+    }
+  } else {
+    // filter traceRows by year
+    const treats=treat==='all'?['pre','post']:[treat];
+    const filteredRows=traceRows[drug].filter(r=>
+      r.year===yr&&!r.anomaly&&treats.includes(r.treat)&&
+      (subtype==='全部亚型'||(src==='cdc'?r.subCdc:r.subMan)===subtype)
+    );
+    const countedIds=new Set();
+    filteredRows.forEach(r=>{
+      if(!countedIds.has(r.id)){countedIds.add(r.id);totalSeqs++;}
+      r.counted.forEach(m=>{mutCounts[m]=(mutCounts[m]||0)+1;});
+    });
+  }
+
+  if(Object.keys(mutCounts).length===0){
+    if(chartInstance){chartInstance.destroy();chartInstance=null;}
+    const canvas=document.getElementById('mainChart');
+    const ctx=canvas.getContext('2d');canvas.width=600;canvas.height=420;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#a8a49a';ctx.font='14px sans-serif';ctx.textAlign='center';
+    ctx.fillText('当前条件下无数据',canvas.width/2,canvas.height/2);
+    renderYearStatTable(drug);return;
+  }
+
+  // Sort by position for bar chart
+  const sorted=Object.entries(mutCounts).sort((a,b)=>getMutPos(a[0])-getMutPos(b[0]));
+  const labels=sorted.map(x=>x[0]);
+  const values=sorted.map(x=>x[1]);
+
+  // Assign colors: same position = same palette group, different index within position
+  const posList=[...new Set(labels.map(m=>getMutPos(m)))].sort((a,b)=>a-b);
+  const posColorIdx={};posList.forEach((p,i)=>posColorIdx[p]=i%PALETTE.length);
+  const posCount={};
+  const bgColors=labels.map(m=>{
+    const pos=getMutPos(m);const paletteRow=PALETTE[posColorIdx[pos]];
+    const idx=posCount[pos]||0;posCount[pos]=(posCount[pos]||0)+1;
+    return paletteRow[idx%paletteRow.length];
+  });
+
+  // Calculate canvas width for bar chart
+  const canvas=document.getElementById('mainChart');
+  if(chartType==='bar'){
+    const nPositions=posList.length;
+    const extraGapPx=15*(nPositions>1?nPositions-1:0);
+    const minW=Math.max(600,labels.length*44+extraGapPx+120);
+    canvas.style.width=minW+'px';canvas.width=minW;canvas.height=420;
+  } else {
+    canvas.style.width='500px';canvas.width=500;canvas.height=420;
+  }
+
+  if(chartInstance){chartInstance.destroy();chartInstance=null;}
+
+  // Draw chart manually with Canvas API (no external lib)
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  if(chartType==='bar'){
+    drawBarChart(ctx,canvas.width,canvas.height,labels,values,bgColors,posList,posColorIdx,`${totalSeqs} 例耐药序列`);
+  } else {
+    drawPieChart(ctx,canvas.width,canvas.height,labels,values,bgColors);
+  }
+
+  renderYearStatTable(drug);
+}
+
+function drawBarChart(ctx,W,H,labels,values,colors,posList,posColorIdx,subtitle){
+  const pad={top:50,right:30,bottom:90,left:50};
+  const ch=H-pad.top-pad.bottom;
+  const maxV=Math.max(...values)||1;
+  const BAR_STEP=44;  // fixed px per bar slot
+  const POS_EXTRA=15; // extra px gap between different positions
+  const barW=28;
+
+  // Background
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+
+  // Title
+  ctx.fillStyle='#1e1c18';ctx.font='bold 13px "Noto Sans SC",sans-serif';ctx.textAlign='center';
+  ctx.fillText(subtitle,W/2,22);
+
+  // Compute x positions for each bar
+  const xPositions=[];
+  let cx=pad.left+BAR_STEP/2;
+  let prevPos=null;
+  labels.forEach((lbl,i)=>{
+    const pos=getMutPos(lbl);
+    if(prevPos!==null&&pos!==prevPos)cx+=POS_EXTRA;
+    xPositions.push(cx);
+    prevPos=pos;cx+=BAR_STEP;
+  });
+
+  // Y axis grid
+  ctx.strokeStyle='#e0ddd6';ctx.lineWidth=1;
+  for(let i=0;i<=5;i++){
+    const y=pad.top+ch*(1-i/5);
+    ctx.beginPath();ctx.moveTo(pad.left-5,y);ctx.lineTo(W-pad.right,y);ctx.stroke();
+    ctx.fillStyle='#a8a49a';ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign='right';
+    ctx.fillText(Math.round(maxV*i/5),pad.left-8,y+4);
+  }
+
+  // Bars
+  labels.forEach((lbl,i)=>{
+    const x=xPositions[i];
+    const barH=Math.max(2,(values[i]/maxV)*ch);
+    const bx=x-barW/2,by=pad.top+ch-barH;
+    ctx.fillStyle=colors[i];ctx.fillRect(bx,by,barW,barH);
+    ctx.strokeStyle='rgba(0,0,0,0.08)';ctx.lineWidth=0.5;ctx.strokeRect(bx,by,barW,barH);
+    ctx.fillStyle='#4a4740';ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign='center';
+    ctx.fillText(values[i],x,by-4);
+    ctx.save();ctx.translate(x,pad.top+ch+14);ctx.rotate(-Math.PI/4);
+    ctx.fillStyle='#1e1c18';ctx.font='11px "JetBrains Mono",monospace';ctx.textAlign='right';
+    ctx.fillText(lbl,0,0);ctx.restore();
+  });
+}
+
+function drawPieChart(ctx,W,H,labels,values,colors){
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+  const total=values.reduce((a,b)=>a+b,0)||1;
+  const cx=W/2-60,cy=H/2+10,r=Math.min(cx,cy)-30;
+  let angle=-Math.PI/2;
+  values.forEach((v,i)=>{
+    const slice=(v/total)*Math.PI*2;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,angle,angle+slice);ctx.closePath();
+    ctx.fillStyle=colors[i];ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
+    // label line
+    const mid=angle+slice/2;
+    if(slice>0.15){
+      const lx=cx+Math.cos(mid)*(r+15),ly=cy+Math.sin(mid)*(r+15);
+      ctx.fillStyle='#1e1c18';ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign=lx>cx?'left':'right';
+      ctx.fillText(`${labels[i]} ${(v/total*100).toFixed(1)}%`,lx,ly);
+    }
+    angle+=slice;
+  });
+  // legend
+  let ly=30;const lx=W-130;
+  ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign='left';
+  labels.slice(0,20).forEach((lbl,i)=>{
+    ctx.fillStyle=colors[i];ctx.fillRect(lx,ly-9,10,10);
+    ctx.fillStyle='#4a4740';ctx.fillText(`${lbl} (${values[i]})`,lx+14,ly);
+    ly+=16;
+  });
+}
+
+/* ═══════════════════════════════════
+   YEAR STAT TABLE
+═══════════════════════════════════ */
+function renderYearStatTable(drug){
+  const el=document.getElementById('year-stat-body');
+  const hint=document.getElementById('year-stat-hint');
+  if(!el)return;
+  const dnm={pr:'蛋白酶PR',nrti:'核苷类NRTI',nnrti:'非核苷类NNRTI',insti:'整合酶INSTI'}[drug];
+  if(hint)hint.textContent=dnm;
+  const yrData=yearData[drug]||{};
+  const years=Object.keys(yrData).filter(y=>y!=='未知').sort().concat(Object.keys(yrData).includes('未知')?['未知']:[]);
+  if(!years.length){el.innerHTML=`<div class="empty"><div class="empty-ico">📅</div>暂无年份数据（亚型文件需含确诊日期列）</div>`;return;}
+  let html='<div style="overflow-x:auto"><table class="year-tbl"><thead><tr><th>确诊年份</th><th>亚型</th><th>耐药序列数</th><th>耐药突变谱（出现次数）</th></tr></thead><tbody>';
+  for(const yr of years){
+    const subtypes=Object.keys(yrData[yr]).sort();
+    subtypes.forEach((sub,idx)=>{
+      const sd=yrData[yr][sub];
+      const sorted=sortMutsByPosAndCount(sd.muts).filter(x=>!x.isGroup);
+      const mutStr=sorted.map(x=>`${x.mut}(${x.count})`).join('  ');
+      html+=`<tr>${idx===0?`<td rowspan="${subtypes.length}" style="font-weight:600;font-family:'JetBrains Mono',monospace;vertical-align:top;white-space:nowrap">${yr}</td>`:''}<td><span class="trace-sub">${esc(sub)}</span></td><td style="text-align:center">${sd.total}</td><td style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.8">${mutStr||'—'}</td></tr>`;
+    });
+  }
+  html+='</tbody></table></div>';el.innerHTML=html;
+}
+
+function dlChartPng(){
+  const canvas=document.getElementById('mainChart');
+  if(!canvas)return;
+  // render at 2x DPI for high-res PNG
+  const scale=2;
+  const offscreen=document.createElement('canvas');
+  offscreen.width=canvas.width*scale;offscreen.height=canvas.height*scale;
+  const ctx2=offscreen.getContext('2d');
+  ctx2.scale(scale,scale);
+  // re-draw onto offscreen at high res
+  ctx2.drawImage(canvas,0,0);
+  offscreen.toBlob(blob=>{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;
+    const drug=document.getElementById('ch-drug')?.value||'chart';
+    const yr=document.getElementById('ch-year')?.value||'all';
+    const treat=document.getElementById('ch-treat')?.value||'all';
+    a.download=`mut_chart_${drug}_${yr}_${treat}.png`;
+    a.click();URL.revokeObjectURL(url);
+  },'image/png');
+}
+
+function dlYearStat(){
+  const drug=document.getElementById('ch-drug')?.value||'pr';
+  const dnm={pr:'蛋白酶PR',nrti:'核苷类NRTI',nnrti:'非核苷类NNRTI',insti:'整合酶INSTI'}[drug];
+  const yrData=yearData[drug]||{};
+  const rows=[['药物类别','确诊年份','亚型','耐药序列数','突变','出现次数']];
+  const years=Object.keys(yrData).sort();
+  for(const yr of years){
+    for(const sub of Object.keys(yrData[yr]).sort()){
+      const sd=yrData[yr][sub];
+      const sorted=sortMutsByPosAndCount(sd.muts).filter(x=>!x.isGroup);
+      if(!sorted.length){rows.push([dnm,yr,sub,sd.total,'—','']);continue;}
+      sorted.forEach(item=>rows.push([dnm,yr,sub,sd.total,item.mut,item.count]));
+    }
+  }
+  dlcsv(rows,`year_stat_${drug}.csv`);
+}
+
+/* ═══════════════════════════════════
+   UTILS
+═══════════════════════════════════ */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+</script>
+</body>
+</html>

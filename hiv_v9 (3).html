@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HIV耐药综合分析平台 v9</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;600&display=swap');
+:root{
+  --bg:#f4f3f0;--bg2:#eceae5;--sur:#fff;--sur2:#f8f7f4;
+  --bd:#e0ddd6;--bd2:#c9c5bc;
+  --tx:#1e1c18;--tx2:#4a4740;--tx3:#7a776e;--tx4:#a8a49a;
+  --bl:#1d5fa8;--blh:#2470c2;--bll:#e6effa;--blb:#aeccf0;
+  --gr:#1e7a48;--grl:#e4f5ec;--grb:#90d4ae;
+  --rd:#b02828;--rdl:#fae8e8;--rdb:#e0a0a0;
+  --am:#9a5a10;--aml:#fdf0e0;--amb:#e8c070;
+  --pu:#6030a0;--pul:#f0e8fa;--pub:#c0a0e8;
+  --te:#0a7870;--tel:#e4f5f4;--teb:#90d0cc;
+  --pk:#a0286a;--pkl:#fae8f4;--pkb:#e0a0cc;
+  --r:5px;--rl:10px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:'Noto Sans SC',sans-serif;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.nav{background:var(--sur);border-bottom:1px solid var(--bd);padding:0 24px;display:flex;align-items:center;height:52px;position:sticky;top:0;z-index:200;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.brand{display:flex;align-items:center;gap:9px;margin-right:28px;flex-shrink:0}
+.bmark{width:30px;height:30px;background:var(--bl);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#fff}
+.bname{font-family:'Source Serif 4',serif;font-size:14px;font-weight:600;color:var(--tx);white-space:nowrap}
+.navlinks{display:flex;align-items:stretch;height:100%;overflow-x:auto;gap:0}
+.navlinks::-webkit-scrollbar{display:none}
+.nla{display:flex;align-items:center;padding:0 14px;font-size:12px;color:var(--tx3);text-decoration:none;border-bottom:2px solid transparent;transition:.15s;white-space:nowrap;cursor:pointer;flex-shrink:0}
+.nla:hover{color:var(--tx)}.nla.on{color:var(--bl);border-bottom-color:var(--bl);font-weight:500}
+.shell{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:200px;flex-shrink:0;background:var(--sur);border-right:1px solid var(--bd);padding:16px 0;position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:var(--bd2)}
+.sbsec{padding:0 10px 8px;margin-bottom:2px}
+.sbsec-lbl{font-size:10px;font-weight:600;color:var(--tx4);letter-spacing:1.5px;text-transform:uppercase;padding:0 6px;margin-bottom:4px}
+.sbi{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:var(--r);font-size:12px;color:var(--tx3);cursor:pointer;transition:.12s}
+.sbi:hover{background:var(--bll);color:var(--tx)}.sbi.on{background:var(--bll);color:var(--bl);font-weight:500}
+.sbdot{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:var(--tx4);flex-shrink:0}
+.sbi.on .sbdot{border-color:var(--bl);color:var(--bl);background:var(--bll)}.sbi.done .sbdot{border-color:var(--gr);color:var(--gr);background:var(--grl)}
+.main{flex:1;min-width:0;padding:22px 24px 56px;overflow-x:hidden}
+.spage{display:none}.spage.on{display:block}
+.ph{margin-bottom:20px}
+.pm{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;color:var(--bl);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.ph h2{font-family:'Source Serif 4',serif;font-size:20px;font-weight:600;color:var(--tx);margin-bottom:4px}
+.ph p{font-size:12px;color:var(--tx3);max-width:700px;line-height:1.7}
+.card{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);box-shadow:var(--sh);margin-bottom:14px;overflow:hidden}
+.ch{padding:11px 17px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:9px;background:var(--sur2);flex-wrap:wrap}
+.cstep{width:23px;height:23px;border-radius:50%;border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--tx3);flex-shrink:0}
+.cstep.a{border-color:var(--bl);color:var(--bl);background:var(--bll)}.cstep.done{border-color:var(--gr);color:var(--gr);background:var(--grl)}
+.ct{font-size:13px;font-weight:600;color:var(--tx)}.csub{font-size:11px;color:var(--tx3);margin-left:auto;white-space:nowrap}
+.cb{padding:16px}
+.ug{display:grid;gap:10px}
+.ug2{grid-template-columns:repeat(2,1fr)}.ug3{grid-template-columns:repeat(3,1fr)}.ug4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1100px){.ug4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.ug3{grid-template-columns:repeat(2,1fr)}.ug4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.ug2,.ug3,.ug4{grid-template-columns:1fr}}
+.uz{border:1.5px dashed var(--bd2);border-radius:var(--rl);padding:14px 10px;text-align:center;cursor:pointer;transition:.15s;position:relative;background:var(--sur2);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100px}
+.uz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.uz:hover{border-color:var(--blh);background:var(--bll)}.uz.drag{border-color:var(--bl);background:var(--bll);box-shadow:0 0 0 3px var(--bll)}.uz.loaded{border-color:var(--gr);border-style:solid;background:var(--grl)}
+.uz .ico{font-size:18px;margin-bottom:4px}.uz .utype{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;margin-bottom:2px}
+.uz .uhint{font-size:10px;color:var(--tx4);line-height:1.4}.uz .ufn{font-size:10px;color:var(--gr);font-weight:500;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;display:none}
+.uz.loaded .ufn{display:block}
+.cfgbox{margin-top:8px;padding:9px 11px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r)}
+.cfgtitle{font-size:9px;font-weight:600;color:var(--tx4);letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px}
+.cfgrow{display:flex;align-items:center;gap:5px;margin-bottom:4px}.cfgrow:last-child{margin-bottom:0}
+.cfglb{font-size:10px;color:var(--tx3);width:90px;flex-shrink:0}
+.cfgi{width:50px;border:1px solid var(--bd2);border-radius:3px;padding:3px 6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--bl);background:var(--sur);outline:none}
+.cfgi:focus{border-color:var(--bl)}.cfgnote{font-size:9px;color:var(--tx4);margin-top:4px}
+.pbar{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:10px;flex-wrap:wrap}
+.plbl{font-size:12px;color:var(--tx2);font-weight:500;flex-shrink:0}
+.pi{width:62px;border:1px solid var(--bd2);border-radius:var(--r);padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--bl);background:var(--sur);text-align:center;outline:none}
+.pi:focus{border-color:var(--bl);box-shadow:0 0 0 2px var(--bll)}
+.chip{display:inline-flex;align-items:center;padding:2px 9px;border-radius:100px;font-size:10px;font-weight:500;white-space:nowrap}
+.cg{background:var(--grl);color:var(--gr);border:1px solid var(--grb)}.ca{background:var(--aml);color:var(--am);border:1px solid var(--amb)}
+.cbl{background:var(--bll);color:var(--bl);border:1px solid var(--blb)}.crd{background:var(--rdl);color:var(--rd);border:1px solid var(--rdb)}
+.cpu{background:var(--pul);color:var(--pu);border:1px solid var(--pub)}.cte{background:var(--tel);color:var(--te);border:1px solid var(--teb)}
+.cpk{background:var(--pkl);color:var(--pk);border:1px solid var(--pkb)}
+.btn{padding:7px 18px;border-radius:var(--r);font-family:'Noto Sans SC',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:.15s;border:1px solid transparent;display:inline-flex;align-items:center;gap:5px}
+.bp{background:var(--bl);color:#fff;border-color:var(--bl)}.bp:hover{background:var(--blh)}.bp:disabled{opacity:.4;cursor:not-allowed}
+.bo{background:var(--sur);color:var(--tx2);border-color:var(--bd2)}.bo:hover{border-color:var(--bl);color:var(--bl)}
+.brd{background:var(--rd);color:#fff;border-color:var(--rd)}.brd:hover{background:#c03030}
+.logp{margin-top:10px;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;display:none}.logp.on{display:block}
+.lh{padding:6px 11px;background:var(--bg2);border-bottom:1px solid var(--bd);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--tx3);display:flex;align-items:center;gap:6px}
+.ldot{width:6px;height:6px;border-radius:50%;background:var(--bl);animation:pu 1.4s infinite;flex-shrink:0}.ldot.done{background:var(--gr);animation:none}
+@keyframes pu{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.lb{padding:9px 11px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.9;max-height:220px;overflow-y:auto;color:var(--tx2)}
+.lb::-webkit-scrollbar{width:3px}.lb::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
+.ll{display:flex;gap:9px}.lt{color:var(--tx4);flex-shrink:0}
+.lm.ok{color:var(--gr)}.lm.info{color:var(--bl)}.lm.warn{color:var(--am)}.lm.err{color:var(--rd)}
+.note{padding:8px 11px;border-radius:var(--r);font-size:11px;line-height:1.7;margin-top:9px}
+.note.bl{background:var(--bll);border:1px solid var(--blb);color:var(--tx2)}.note.am{background:var(--aml);border:1px solid var(--amb);color:var(--tx2)}.note.rd{background:var(--rdl);border:1px solid var(--rdb);color:var(--tx2)}.note.gr{background:var(--grl);border:1px solid var(--grb);color:var(--tx2)}
+.kbgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.kbi .kbic{font-size:12px;font-family:"JetBrains Mono",monospace;word-break:break-all;font-weight:600;line-height:1.4}
+.kbi{padding:9px 11px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r)}
+.kbit{font-size:10px;color:var(--tx4);margin-bottom:3px}.kbic{font-size:12px;font-weight:600;font-family:"JetBrains Mono",monospace;color:var(--tx3);line-height:1.4}
+.kbi.ok{border-color:var(--grb);background:var(--grl)}.kbi.ok .kbic{color:var(--gr)}
+/* tables */
+.tblwrap{overflow-x:auto}
+.rtbl{width:100%;border-collapse:collapse;font-size:12px}
+.rtbl thead tr{background:var(--bg2);border-bottom:1px solid var(--bd2)}
+.rtbl th{padding:7px 11px;text-align:left;font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
+.rtbl td{padding:7px 11px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.rtbl tbody tr:last-child td{border-bottom:none}.rtbl tbody tr:hover td{background:var(--bll)}
+.rtbl td.hl{background:var(--rdl);color:var(--rd);font-weight:600}
+.rtbl td.mut-col{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--tx)}
+.pos-sep td{background:var(--bg2)!important;padding:4px 11px}
+.pos-sep .pos-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.5px}
+.sum-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:14px}
+.scard{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);padding:12px 14px}
+.sv{font-family:'Source Serif 4',serif;font-size:24px;font-weight:600;line-height:1;margin-bottom:3px}
+.sl{font-size:10px;color:var(--tx4)}.ss{font-size:11px;color:var(--tx3);margin-top:2px}
+.res-layout{display:grid;grid-template-columns:200px 1fr;gap:12px;align-items:start}
+@media(max-width:720px){.res-layout{grid-template-columns:1fr}}
+.fp{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;position:sticky;top:62px;max-height:calc(100vh - 80px);overflow-y:auto}
+.fp::-webkit-scrollbar{width:3px}.fp::-webkit-scrollbar-thumb{background:var(--bd2)}
+.fph{padding:8px 12px;background:var(--bg2);border-bottom:1px solid var(--bd);font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.8px;text-transform:uppercase;position:sticky;top:0;z-index:10}
+.fpi{padding:8px 12px;border-bottom:1px solid var(--bd);cursor:pointer;transition:.12s;display:flex;justify-content:space-between;align-items:center}
+.fpi:last-child{border-bottom:none}.fpi:hover{background:var(--bll)}.fpi.on{background:var(--bll)}
+.fpname{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--tx)}.fpi.on .fpname{color:var(--bl)}
+.fpcnt{font-size:10px;background:var(--bg2);padding:1px 6px;border-radius:100px;color:var(--tx4);white-space:nowrap;flex-shrink:0}.fpi.on .fpcnt{background:var(--blb);color:var(--bl)}
+.mutp{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden}
+.mutph{padding:10px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:7px;background:var(--sur2);flex-wrap:wrap}
+.rn{color:var(--tx4);font-family:'JetBrains Mono',monospace;font-size:11px}
+.mn{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--tx)}
+.pw{min-width:110px}.pg{display:flex;align-items:center;gap:6px}
+.pb{flex:1;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden}
+.pf{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.pf.bl{background:var(--bl)}.pf.gr{background:var(--gr)}.pf.pu{background:var(--pu)}.pf.am{background:var(--am)}.pf.pk{background:var(--pk)}
+.pv{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--tx);min-width:22px;text-align:right}
+.empty{text-align:center;padding:28px;color:var(--tx4);font-size:12px}.empty-ico{font-size:22px;margin-bottom:7px;opacity:.4}
+.tabbar{display:flex;border-bottom:1px solid var(--bd);background:var(--sur2);overflow-x:auto}
+.tabbar::-webkit-scrollbar{display:none}
+.tab{padding:9px 15px;font-size:12px;font-weight:500;color:var(--tx3);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;white-space:nowrap;display:flex;align-items:center;gap:4px}
+.tab:hover{color:var(--tx)}.tab.on{color:var(--bl);border-bottom-color:var(--bl)}
+.srctog{display:flex;border:1px solid var(--bd2);border-radius:var(--r);overflow:hidden}
+.stb{padding:5px 12px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:var(--sur);color:var(--tx3);transition:.15s;font-family:'Noto Sans SC',sans-serif}
+.stb:hover{background:var(--bll);color:var(--bl)}.stb.on{background:var(--bl);color:#fff}
+.dlrow{display:flex;gap:7px;padding:11px 15px;border-top:1px solid var(--bd);flex-wrap:wrap}
+/* trace */
+.trace-filters{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.trf-lbl{font-size:11px;color:var(--tx3);white-space:nowrap}
+.trf-sel{border:1px solid var(--bd2);border-radius:var(--r);padding:4px 8px;font-size:12px;font-family:'Noto Sans SC',sans-serif;color:var(--tx);background:var(--sur);outline:none}
+.trf-sel:focus{border-color:var(--bl)}
+.trace-wrap{overflow-x:auto;border:1px solid var(--bd);border-radius:var(--r)}
+.trace-table{width:100%;border-collapse:collapse;font-size:12px;min-width:700px}
+.trace-table th{padding:7px 11px;background:var(--bg2);font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.8px;text-transform:uppercase;text-align:left;white-space:nowrap;border-bottom:1px solid var(--bd2)}
+.trace-table td{padding:7px 11px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.trace-table tbody tr:last-child td{border-bottom:none}.trace-table tbody tr:hover td{background:var(--bll)}
+.trace-id{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--tx)}
+.trace-sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--tx2)}
+.trace-counted{display:flex;flex-wrap:wrap;gap:3px;align-items:center}
+.mut-tag{display:inline-flex;align-items:center;padding:1px 6px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;border:1px solid transparent}
+.mut-tag.res{background:var(--rdl);color:var(--rd);border-color:var(--rdb)}
+.mut-tag.skip{background:var(--bg2);color:var(--tx4);border-color:var(--bd);text-decoration:line-through}
+.mut-tag.combo{background:var(--pul);color:var(--pu);border-color:var(--pub)}
+.mut-arrow{font-size:14px;color:var(--tx4);margin:0 2px}
+.trace-pager{display:flex;align-items:center;gap:8px;padding:8px 14px;border-top:1px solid var(--bd);background:var(--sur2)}
+.trace-pager button{padding:4px 12px;border:1px solid var(--bd2);border-radius:var(--r);background:var(--sur);font-size:12px;cursor:pointer;font-family:'Noto Sans SC',sans-serif}
+.trace-pager button:hover{border-color:var(--bl);color:var(--bl)}.trace-pager button:disabled{opacity:.4;cursor:not-allowed}
+#trace-pager-info{font-size:11px;color:var(--tx3);font-family:'JetBrains Mono',monospace}
+/* chart */
+.chart-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;padding:11px 14px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r)}
+.chart-sel{border:1px solid var(--bd2);border-radius:var(--r);padding:5px 10px;font-size:12px;font-family:'Noto Sans SC',sans-serif;color:var(--tx);background:var(--sur);outline:none;min-width:90px}
+.chart-sel:focus{border-color:var(--bl)}
+.chart-lbl{font-size:11px;color:var(--tx3);white-space:nowrap;font-weight:500}
+.chart-scroll-wrap{overflow-x:auto;border:1px solid var(--bd);border-radius:var(--r);background:var(--sur)}
+.chart-scroll-wrap::-webkit-scrollbar{height:6px}.chart-scroll-wrap::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
+canvas#mainChart{display:block}
+/* toggle switch */
+.toggle-wrap{display:flex;align-items:center;gap:8px}
+.toggle{position:relative;width:40px;height:22px;background:var(--bd2);border-radius:11px;cursor:pointer;transition:.2s}
+.toggle.on{background:var(--bl)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on::after{left:20px}
+.toggle-label{font-size:12px;color:var(--tx2);font-weight:500}
+/* kbprev */
+.kbprev{width:100%;border-collapse:collapse;font-size:11px}
+.kbprev th{padding:3px 7px;background:var(--bg2);font-size:9px;font-weight:600;color:var(--tx3);text-align:left;white-space:nowrap}
+.kbprev td{padding:3px 7px;border-bottom:1px solid var(--bd);white-space:nowrap}
+/* year tbl */
+.year-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.year-tbl th{padding:6px 10px;background:var(--bg2);font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.8px;text-transform:uppercase;text-align:left;white-space:nowrap;border-bottom:1px solid var(--bd2)}
+.year-tbl td{padding:6px 10px;border-bottom:1px solid var(--bd);vertical-align:top}
+.year-tbl tbody tr:hover td{background:var(--bll)}
+.ft{margin-top:28px;padding-top:14px;border-top:1px solid var(--bd);font-size:11px;color:var(--tx4)}
+/* kb detail table in step */
+.kb-detail-wrap{max-height:200px;overflow-y:auto;border:1px solid var(--bd);border-radius:var(--r);margin-top:8px}
+.kb-detail-wrap::-webkit-scrollbar{width:3px}.kb-detail-wrap::-webkit-scrollbar-thumb{background:var(--bd2)}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="brand"><div class="bmark">HIV</div><span class="bname">耐药综合分析平台 v9</span></div>
+  <div class="navlinks">
+    <span class="nla on" data-p="upload" onclick="goPage('upload')">① 配置与上传</span>
+    <span class="nla" data-p="result-judge" onclick="goPage('result-judge')">② 耐药判读</span>
+    <span class="nla" data-p="result-count" onclick="goPage('result-count')">③ 突变计数</span>
+    <span class="nla" data-p="result-trace" onclick="goPage('result-trace')">④ 溯源</span>
+    <span class="nla" data-p="result-chart" onclick="goPage('result-chart')">⑤ 可视化</span>
+  </div>
+</nav>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sbsec">
+    <div class="sbsec-lbl">配置与上传</div>
+    <div class="sbi on" id="sb-upload" onclick="goPage('upload')"><div class="sbdot">①</div><span>配置与上传</span></div>
+  </div>
+  <div class="sbsec">
+    <div class="sbsec-lbl">分析结果</div>
+    <div class="sbi" id="sb-result-judge" onclick="goPage('result-judge')"><div class="sbdot">A</div><span>耐药判读表</span></div>
+    <div class="sbi" id="sb-result-count" onclick="goPage('result-count')"><div class="sbdot">B</div><span>突变计数</span></div>
+    <div class="sbi" id="sb-result-trace" onclick="goPage('result-trace')"><div class="sbdot">C</div><span>突变溯源</span></div>
+    <div class="sbi" id="sb-result-chart" onclick="goPage('result-chart')"><div class="sbdot">D</div><span>可视化图表</span></div>
+  </div>
+</aside>
+<main class="main">
+
+<!-- ══════════ PAGE: UPLOAD ══════════ -->
+<div class="spage on" id="page-upload">
+  <div class="ph"><div class="pm">Step 01 · Configure & Upload</div><h2>配置分析参数与上传数据</h2>
+    <p>设置分析模式与阈值，上传耐药评分CSV文件。知识库从斯坦福HIVdb自动加载。</p>
+  </div>
+
+  <!-- Step 0: 分析模式 -->
+  <div class="card">
+    <div class="ch"><div class="cstep a">⓪</div><div class="ct">分析模式选择</div></div>
+    <div class="cb">
+      <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">
+        <div style="flex:1;min-width:200px">
+          <div class="pbar" style="margin-bottom:8px">
+            <span class="chip cbl" style="font-size:12px;padding:4px 14px">Drug Resistance 耐药分析</span>
+            <span style="font-size:11px;color:var(--tx4)">默认启用</span>
+          </div>
+          <div class="pbar">
+            <div class="toggle-wrap">
+              <div class="toggle" id="tdr-toggle" onclick="toggleTDR()"></div>
+              <span class="toggle-label">TDR 传播耐药</span>
+            </div>
+            <span style="font-size:11px;color:var(--tx4);margin-left:auto">额外勾选</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1: 阈值设置 -->
+  <div class="card">
+    <div class="ch"><div class="cstep a">①</div><div class="ct">阈值设置</div></div>
+    <div class="cb">
+      <div class="pbar">
+        <span class="plbl">序列耐药判定：评分列任意药物 ≥</span>
+        <input class="pi" type="number" id="seq-res-thr" value="10" min="1" max="60">
+        <span style="font-size:11px;color:var(--tx4)">分 即判定为耐药序列</span>
+        <div style="display:flex;gap:6px;margin-left:auto">
+          <span class="chip crd">可选 10 / 15</span>
+        </div>
+      </div>
+      <div class="pbar">
+        <span class="plbl">知识库突变计入阈值 ≥</span>
+        <input class="pi" type="number" id="kb-res-thr" value="10" min="1" max="60">
+        <span style="font-size:11px;color:var(--tx4)">分 知识库中≥此分值的突变计入一次</span>
+        <span class="chip ca" style="margin-left:auto">默认 10</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: 知识库（自动加载） -->
+  <div class="card">
+    <div class="ch">
+      <div class="cstep a" id="s-kb">②</div>
+      <div class="ct">斯坦福 HIVdb 知识库</div>
+      <div class="csub" id="kb-badge">加载中...</div>
+    </div>
+    <div class="cb">
+      <div class="note gr" style="margin-bottom:12px" id="kb-status-note">
+        <strong>自动加载中...</strong> 正在从 GitHub 仓库获取知识库数据。
+      </div>
+      <div class="kbgrid">
+        <div class="kbi" id="kbi-pi"><div class="kbit">蛋白酶 PI</div><div class="kbic" id="kbc-pi">—</div></div>
+        <div class="kbi" id="kbi-nrti"><div class="kbit">核苷类 NRTI</div><div class="kbic" id="kbc-nrti">—</div></div>
+        <div class="kbi" id="kbi-nnrti"><div class="kbit">非核苷类 NNRTI</div><div class="kbic" id="kbc-nnrti">—</div></div>
+        <div class="kbi" id="kbi-insti"><div class="kbit">整合酶 INSTI</div><div class="kbic" id="kbc-insti">—</div></div>
+      </div>
+      <div id="kb-manual-area" style="margin-top:12px;display:none">
+        <div class="cfgtitle" style="margin-bottom:8px">手动上传（自动加载失败时使用）</div>
+        <div class="ug ug4">
+          <div>
+            <div class="uz" id="kbuz-pi" ondragover="dzo(event,'kbuz-pi')" ondragleave="dzl(event,'kbuz-pi')" ondrop="kbDrop(event,'pi')">
+              <input type="file" accept=".csv" onchange="kbLoad(this,'pi')">
+              <div class="ico">🧬</div><div class="utype" style="color:var(--rd)">PI 判读表</div>
+              <div class="uhint">CSV</div><div class="ufn" id="kbfn-pi"></div>
+            </div>
+          </div>
+          <div>
+            <div class="uz" id="kbuz-nrti" ondragover="dzo(event,'kbuz-nrti')" ondragleave="dzl(event,'kbuz-nrti')" ondrop="kbDrop(event,'nrti')">
+              <input type="file" accept=".csv" onchange="kbLoad(this,'nrti')">
+              <div class="ico">💊</div><div class="utype" style="color:var(--rd)">NRTI 判读表</div>
+              <div class="uhint">CSV</div><div class="ufn" id="kbfn-nrti"></div>
+            </div>
+          </div>
+          <div>
+            <div class="uz" id="kbuz-nnrti" ondragover="dzo(event,'kbuz-nnrti')" ondragleave="dzl(event,'kbuz-nnrti')" ondrop="kbDrop(event,'nnrti')">
+              <input type="file" accept=".csv" onchange="kbLoad(this,'nnrti')">
+              <div class="ico">⚗️</div><div class="utype" style="color:var(--rd)">NNRTI 判读表</div>
+              <div class="uhint">CSV</div><div class="ufn" id="kbfn-nnrti"></div>
+            </div>
+          </div>
+          <div>
+            <div class="uz" id="kbuz-insti" ondragover="dzo(event,'kbuz-insti')" ondragleave="dzl(event,'kbuz-insti')" ondrop="kbDrop(event,'insti')">
+              <input type="file" accept=".csv" onchange="kbLoad(this,'insti')">
+              <div class="ico">🔗</div><div class="utype" style="color:var(--rd)">INSTI 判读表</div>
+              <div class="uhint">CSV</div><div class="ufn" id="kbfn-insti"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:8px"><button class="btn bo" style="font-size:11px" onclick="document.getElementById('kb-manual-area').style.display=document.getElementById('kb-manual-area').style.display==='none'?'':'none'">手动上传知识库 ▾</button></div>
+    </div>
+  </div>
+
+  <!-- Step 3: 耐药评分文件 -->
+  <div class="card">
+    <div class="ch">
+      <div class="cstep a" id="s-drug">③</div>
+      <div class="ct">耐药评分文件（含突变信息）</div>
+      <div class="csub" id="drug-badge">0 / 2 已载入</div>
+    </div>
+    <div class="cb">
+      <div class="ug ug2">
+        <!-- PR+RT file -->
+        <div>
+          <div class="uz" id="uz-prrt" ondragover="dzo(event,'uz-prrt')" ondragleave="dzl(event,'uz-prrt')" ondrop="fileDrop(event,'prrt')">
+            <input type="file" accept=".csv" onchange="fileLoad(this,'prrt')">
+            <div class="ico">🧬</div><div class="utype" style="color:var(--bl)">Pr+RT 文件</div>
+            <div class="uhint">含蛋白酶 / NRTI / NNRTI</div><div class="ufn" id="fn-prrt"></div>
+          </div>
+          <div class="cfgbox">
+            <div class="cfgtitle">列位配置（可调整）</div>
+            <div class="cfgrow"><span class="cfglb">序列ID列</span><input class="cfgi" id="prrt-id" value="A"></div>
+            <div style="border-top:1px solid var(--bd);margin:5px 0"></div>
+            <div class="cfgnote" style="color:var(--bl);font-weight:600">蛋白酶 PI</div>
+            <div class="cfgrow"><span class="cfglb">主要突变列</span><input class="cfgi" id="prrt-pr-mut1" value="C"></div>
+            <div class="cfgrow"><span class="cfglb">辅助突变列</span><input class="cfgi" id="prrt-pr-mut2" value="D"></div>
+            <div class="cfgrow"><span class="cfglb">药物打分列</span><input class="cfgi" id="prrt-pr-scores" value="E,G,I,K,M,O,Q,S" style="width:160px"></div>
+            <div style="border-top:1px solid var(--bd);margin:5px 0"></div>
+            <div class="cfgnote" style="color:var(--gr);font-weight:600">NRTI 核苷类</div>
+            <div class="cfgrow"><span class="cfglb">突变列</span><input class="cfgi" id="prrt-nrti-mut" value="U"></div>
+            <div class="cfgrow"><span class="cfglb">药物打分列</span><input class="cfgi" id="prrt-nrti-scores" value="V,X,Z,AB,AD,AF,AH" style="width:160px"></div>
+            <div style="border-top:1px solid var(--bd);margin:5px 0"></div>
+            <div class="cfgnote" style="color:var(--am);font-weight:600">NNRTI 非核苷类</div>
+            <div class="cfgrow"><span class="cfglb">突变列</span><input class="cfgi" id="prrt-nnrti-mut" value="AJ"></div>
+            <div class="cfgrow"><span class="cfglb">药物打分列</span><input class="cfgi" id="prrt-nnrti-scores" value="AK,AM,AO,AQ,AS,AU" style="width:160px"></div>
+          </div>
+        </div>
+        <!-- IN file -->
+        <div>
+          <div class="uz" id="uz-in" ondragover="dzo(event,'uz-in')" ondragleave="dzl(event,'uz-in')" ondrop="fileDrop(event,'in')">
+            <input type="file" accept=".csv" onchange="fileLoad(this,'in')">
+            <div class="ico">🔗</div><div class="utype" style="color:var(--pk)">IN 文件</div>
+            <div class="uhint">含整合酶 INSTI</div><div class="ufn" id="fn-in"></div>
+          </div>
+          <div class="cfgbox">
+            <div class="cfgtitle">列位配置（可调整）</div>
+            <div class="cfgrow"><span class="cfglb">序列ID列</span><input class="cfgi" id="in-id" value="A"></div>
+            <div style="border-top:1px solid var(--bd);margin:5px 0"></div>
+            <div class="cfgnote" style="color:var(--pk);font-weight:600">INSTI 整合酶</div>
+            <div class="cfgrow"><span class="cfglb">突变列1</span><input class="cfgi" id="in-insti-mut1" value="AW"></div>
+            <div class="cfgrow"><span class="cfglb">突变列2</span><input class="cfgi" id="in-insti-mut2" value="AX"></div>
+            <div class="cfgrow"><span class="cfglb">药物打分列</span><input class="cfgi" id="in-insti-scores" value="AY,BA,BC,BE,BG" style="width:160px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4: 补充信息（可选） -->
+  <div class="card">
+    <div class="ch">
+      <div class="cstep a" id="s-supp">④</div>
+      <div class="ct">补充信息 — 治疗前/后判定（可选）</div>
+      <div class="csub" id="supp-badge">未上传</div>
+    </div>
+    <div class="cb">
+      <div class="ug ug2">
+        <div>
+          <div class="uz" id="uz-supp" ondragover="dzo(event,'uz-supp')" ondragleave="dzl(event,'uz-supp')" ondrop="fileDrop(event,'supp')">
+            <input type="file" accept=".csv" onchange="fileLoad(this,'supp')">
+            <div class="ico">📅</div><div class="utype" style="color:var(--te)">补充信息文件</div>
+            <div class="uhint">ID + 抽血日期 + 抗病毒治疗时间</div><div class="ufn" id="fn-supp"></div>
+          </div>
+          <div class="cfgbox">
+            <div class="cfgtitle">列位配置</div>
+            <div class="cfgrow"><span class="cfglb">序列ID列</span><input class="cfgi" id="supp-id" value="A"></div>
+            <div class="cfgrow"><span class="cfglb">抽血日期列</span><input class="cfgi" id="supp-blood" value="B"></div>
+            <div class="cfgrow"><span class="cfglb">治疗开始日期列</span><input class="cfgi" id="supp-treat" value="C"></div>
+            <div class="cfgnote">日期格式 2021/1/5 或 2021-01-05</div>
+          </div>
+        </div>
+        <div>
+          <div class="cfgbox" style="margin-top:0">
+            <div class="cfgtitle">治疗前/后阈值</div>
+            <div class="pbar" style="margin-bottom:8px">
+              <span class="plbl">抽血 - 治疗 ≥</span>
+              <input class="pi" type="number" id="treat-thr" value="30" min="0">
+              <span style="font-size:11px;color:var(--tx4)">天 = 治疗后</span>
+            </div>
+            <div class="cfgtitle" style="margin-top:10px">年份提取方式</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="font-size:11px;display:flex;align-items:center;gap:5px;cursor:pointer">
+                <input type="radio" name="year-src" value="blood" checked> 按抽血日期提取年份
+              </label>
+              <label style="font-size:11px;display:flex;align-items:center;gap:5px;cursor:pointer">
+                <input type="radio" name="year-src" value="treat"> 按抗病毒治疗时间提取年份
+              </label>
+              <label style="font-size:11px;display:flex;align-items:center;gap:5px;cursor:pointer">
+                <input type="radio" name="year-src" value="custom"> 人为指定列
+              </label>
+              <div id="year-custom-cfg" style="display:none;margin-left:20px">
+                <div class="cfgrow"><span class="cfglb">年份所在列</span><input class="cfgi" id="supp-year-col" value=""></div>
+                <div class="cfgrow"><span class="cfglb">列名称</span><input class="cfgi" id="supp-year-name" value="年份" style="width:80px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 5: 亚型（可选） -->
+  <div class="card">
+    <div class="ch">
+      <div class="cstep a" id="s-sub">⑤</div>
+      <div class="ct">亚型信息文件（可选）</div>
+      <div class="csub" id="sub-badge">未上传</div>
+    </div>
+    <div class="cb">
+      <div class="ug ug2">
+        <div>
+          <div class="uz" id="uz-sub" ondragover="dzo(event,'uz-sub')" ondragleave="dzl(event,'uz-sub')" ondrop="fileDrop(event,'sub')">
+            <input type="file" accept=".csv" onchange="fileLoad(this,'sub')">
+            <div class="ico">🌐</div><div class="utype" style="color:var(--te)">亚型信息文件</div>
+            <div class="uhint">序列ID及亚型判读结果</div><div class="ufn" id="fn-sub"></div>
+          </div>
+          <div class="cfgbox">
+            <div class="cfgtitle">列位配置</div>
+            <div class="cfgrow"><span class="cfglb">序列ID列</span><input class="cfgi" id="sub-id" value="A"></div>
+            <div class="cfgrow"><span class="cfglb">斯坦福判读列</span><input class="cfgi" id="sub-stanford" value="B"></div>
+            <div class="cfgrow"><span class="cfglb">CDC判读列</span><input class="cfgi" id="sub-cdc" value="C"></div>
+            <div class="cfgrow"><span class="cfglb">人工判读列</span><input class="cfgi" id="sub-man" value="D"></div>
+            <div style="border-top:1px solid var(--bd);margin:6px 0"></div>
+            <div class="cfgrow"><span class="cfglb">亚型归类按</span>
+              <select class="trf-sel" id="sub-use" style="width:120px">
+                <option value="man">人工判读(D列)</option>
+                <option value="cdc">CDC判读(C列)</option>
+                <option value="stanford">斯坦福(B列)</option>
+                <option value="custom">自定义列</option>
+              </select>
+            </div>
+            <div id="sub-custom-cfg" style="display:none">
+              <div class="cfgrow"><span class="cfglb">自定义列</span><input class="cfgi" id="sub-cus-col" value="E"></div>
+              <div class="cfgrow"><span class="cfglb">列名称</span><input class="cfgi" id="sub-cus-name" value="" style="width:80px" placeholder="名称"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 6: 执行 -->
+  <div class="card">
+    <div class="ch"><div class="cstep a">⑥</div><div class="ct">执行分析</div></div>
+    <div class="cb">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn bp" id="btnrun" onclick="runAll()" disabled>▶ 开始处理</button>
+        <span style="font-size:12px;color:var(--tx4)" id="rhint">需要：至少上传 Pr+RT 或 IN 文件</span>
+      </div>
+      <div class="logp" id="logp">
+        <div class="lh"><div class="ldot" id="ldot"></div><span id="lstatus">处理中...</span></div>
+        <div class="lb" id="logb"></div>
+      </div>
+      <div id="anomaly-section" style="display:none;margin-top:12px">
+        <div class="note rd"><strong>⚠️ 发现异常序列（需人工核查）：</strong>这些序列被判为耐药，但携带的突变在知识库检索中无法解释评分，已从统计中排除。</div>
+        <div style="display:flex;gap:7px;margin-top:8px;flex-wrap:wrap" id="anomaly-btns"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE: 耐药判读表 ══════════ -->
+<div class="spage" id="page-result-judge">
+  <div class="ph"><div class="pm">Analysis A · Drug Resistance Judgment</div><h2>耐药判读结果</h2>
+    <p>每条序列的各药物类别耐药判定及治疗前/后标签。</p>
+  </div>
+  <div id="judge-empty" class="empty"><div class="empty-ico">⬆️</div>请先完成文件上传和处理</div>
+  <div id="judge-main" style="display:none">
+    <div class="card">
+      <div class="ch"><div class="cstep done">A</div><div class="ct">耐药判读总表</div><div class="csub" id="judge-total-hint"></div></div>
+      <div class="cb" id="judge-summary"></div>
+      <div class="cb">
+        <div class="trace-filters" style="margin-bottom:8px">
+          <span class="trf-lbl">筛选</span>
+          <select class="trf-sel" id="judge-filter" onchange="renderJudgeTable()">
+            <option value="all">全部序列</option>
+            <option value="any-res">任意药物耐药</option>
+            <option value="pi">PIs耐药</option>
+            <option value="nrti">NRTIs耐药</option>
+            <option value="nnrti">NNRTIs耐药</option>
+            <option value="insti">INSTIs耐药</option>
+          </select>
+          <span class="trf-lbl">每页</span>
+          <select class="trf-sel" id="judge-pagesize" onchange="judgePageReset()">
+            <option value="50">50</option><option value="100">100</option><option value="200">200</option>
+          </select>
+        </div>
+        <div class="tblwrap" id="judge-table-wrap"></div>
+        <div class="trace-pager" id="judge-pager">
+          <button onclick="judgePgPrev()">← 上一页</button>
+          <span id="judge-pager-info"></span>
+          <button onclick="judgePgNext()">下一页 →</button>
+        </div>
+      </div>
+      <div class="dlrow">
+        <button class="btn bo" onclick="dlJudge()">⬇ 下载耐药判读表 CSV</button>
+        <button class="btn bo" onclick="dlTreatLabel()" id="btn-dl-treat" style="display:none">⬇ 下载治疗前后标签 CSV</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE: 突变计数 ══════════ -->
+<div class="spage" id="page-result-count">
+  <div class="ph"><div class="pm">Analysis B · Mutation Counting</div><h2>突变计数</h2>
+    <p>统计各类药物耐药序列中出现的耐药突变及出现次数。</p>
+  </div>
+  <div id="count-empty" class="empty"><div class="empty-ico">⬆️</div>请先完成文件上传和处理</div>
+  <div id="count-main" style="display:none">
+    <div class="card">
+      <div class="ch">
+        <div class="cstep done">B</div><div class="ct">突变计数结果</div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="trf-lbl">计数模式</span>
+          <div class="srctog" id="count-mode-tog">
+            <button class="stb on" onclick="setCountMode('simple')">计数</button>
+            <button class="stb" onclick="setCountMode('scientific')">科学计数</button>
+          </div>
+        </div>
+      </div>
+      <div class="tabbar" id="count-drug-tabs">
+        <div class="tab on" data-d="pi" onclick="setCountDrug('pi')">🧬 蛋白酶 PI</div>
+        <div class="tab" data-d="nrti" onclick="setCountDrug('nrti')">💊 核苷类 NRTI</div>
+        <div class="tab" data-d="nnrti" onclick="setCountDrug('nnrti')">⚗️ 非核苷类 NNRTI</div>
+        <div class="tab" data-d="insti" onclick="setCountDrug('insti')">🔗 整合酶 INSTI</div>
+      </div>
+      <div class="tabbar" style="border-top:none" id="count-treat-tabs">
+        <div class="tab on" data-t="all" onclick="setCountTreat('all')">全部</div>
+        <div class="tab" data-t="pre" onclick="setCountTreat('pre')">治疗前</div>
+        <div class="tab" data-t="post" onclick="setCountTreat('post')">治疗后</div>
+      </div>
+      <div id="count-content" style="padding:14px"><div class="empty"><div class="empty-ico">📊</div>处理完成后在此显示</div></div>
+      <div class="dlrow" id="count-dlrow" style="display:none">
+        <button class="btn bo" onclick="dlCount()">⬇ 下载当前视图 CSV</button>
+        <button class="btn bo" onclick="dlCountAll()">⬇ 下载全量计数 CSV</button>
+      </div>
+    </div>
+    <!-- TDR section -->
+    <div class="card" id="tdr-card" style="display:none">
+      <div class="ch"><div class="cstep done" style="border-color:var(--pu);color:var(--pu);background:var(--pul)">T</div><div class="ct">TDR 传播耐药突变统计（WHO 2009）</div></div>
+      <div class="tabbar" id="tdr-drug-tabs">
+        <div class="tab on" data-d="pi" onclick="setTdrDrug('pi')">🧬 蛋白酶 PI</div>
+        <div class="tab" data-d="nrti" onclick="setTdrDrug('nrti')">💊 核苷类 NRTI</div>
+        <div class="tab" data-d="nnrti" onclick="setTdrDrug('nnrti')">⚗️ 非核苷类 NNRTI</div>
+      </div>
+      <div id="tdr-content" style="padding:14px"></div>
+      <div class="dlrow">
+        <button class="btn bo" onclick="dlTdr()">⬇ 下载 TDR 计数 CSV</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE: 溯源 ══════════ -->
+<div class="spage" id="page-result-trace">
+  <div class="ph"><div class="pm">Analysis C · Mutation Trace</div><h2>突变判读溯源</h2>
+    <p>逐序列展示原始突变 → 知识库匹配 → 最终计入统计的耐药突变。</p>
+  </div>
+  <div id="trace-empty" class="empty"><div class="empty-ico">⬆️</div>请先完成文件上传和处理</div>
+  <div id="trace-main" style="display:none">
+    <div class="card">
+      <div class="ch"><div class="cstep done">C</div><div class="ct">突变判读溯源</div><div class="csub" id="trace-total-hint"></div></div>
+      <div class="cb">
+        <div class="trace-filters">
+          <span class="trf-lbl">药物类别</span>
+          <select class="trf-sel" id="trf-drug" onchange="renderTrace()">
+            <option value="pi">🧬 蛋白酶 PI</option>
+            <option value="nrti">💊 核苷类 NRTI</option>
+            <option value="nnrti">⚗️ 非核苷类 NNRTI</option>
+            <option value="insti">🔗 整合酶 INSTI</option>
+          </select>
+          <span class="trf-lbl">治疗状态</span>
+          <select class="trf-sel" id="trf-treat" onchange="renderTrace()">
+            <option value="all">全部</option><option value="pre">治疗前</option><option value="post">治疗后</option>
+          </select>
+          <span class="trf-lbl">筛选</span>
+          <select class="trf-sel" id="trf-res" onchange="renderTrace()">
+            <option value="res">仅耐药序列</option><option value="anomaly">仅异常序列</option><option value="all">全部</option>
+          </select>
+          <span class="trf-lbl">每页</span>
+          <select class="trf-sel" id="trf-pagesize" onchange="tracePageReset()">
+            <option value="25">25</option><option value="50">50</option><option value="100">100</option>
+          </select>
+        </div>
+        <div class="note bl" style="margin-bottom:12px;font-size:11px">
+          <strong>图例：</strong>
+          <span class="mut-tag res">M184V</span> KB耐药突变（已计入）&nbsp;&nbsp;
+          <span class="mut-tag skip">V179D</span> 低于KB阈值（未计入）&nbsp;&nbsp;
+          <span class="mut-tag combo">K103D+V179E</span> 组合突变（科学计数）&nbsp;&nbsp;
+          <span style="font-size:10px;color:var(--rd);font-weight:600">红底行</span> = 异常序列
+        </div>
+        <div class="trace-wrap"><table class="trace-table" id="trace-tbl">
+          <thead><tr>
+            <th style="width:130px">序列 ID</th><th style="width:70px">治疗</th>
+            <th>原始突变 → 判读结果</th><th style="width:80px">计入数</th>
+          </tr></thead>
+          <tbody id="trace-tbody"></tbody>
+        </table></div>
+        <div class="trace-pager">
+          <button id="trace-prev" onclick="tracePagePrev()">← 上一页</button>
+          <span id="trace-pager-info"></span>
+          <button id="trace-next" onclick="tracePageNext()">下一页 →</button>
+        </div>
+      </div>
+      <div class="dlrow">
+        <button class="btn bo" onclick="dlTrace()">⬇ 下载当前筛选 CSV</button>
+        <button class="btn bo" onclick="dlTraceAll()">⬇ 下载全量溯源 CSV</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE: 可视化 ══════════ -->
+<div class="spage" id="page-result-chart">
+  <div class="ph"><div class="pm">Analysis D · Visualization</div><h2>突变可视化</h2>
+    <p>交互选择参数，以柱状图展示耐药突变频次分布。</p>
+  </div>
+  <div id="chart-empty" class="empty"><div class="empty-ico">⬆️</div>请先完成文件上传和处理</div>
+  <div id="chart-main" style="display:none">
+    <div class="card">
+      <div class="ch"><div class="cstep done">D</div><div class="ct">可视化</div></div>
+      <div class="cb">
+        <div class="chart-controls">
+          <span class="chart-lbl">药物类别</span>
+          <select class="chart-sel" id="ch-drug" onchange="renderChart()">
+            <option value="pi">🧬 PI</option><option value="nrti">💊 NRTI</option>
+            <option value="nnrti">⚗️ NNRTI</option><option value="insti">🔗 INSTI</option>
+          </select>
+          <span class="chart-lbl">治疗状态</span>
+          <select class="chart-sel" id="ch-treat" onchange="renderChart()">
+            <option value="all">全部</option><option value="pre">治疗前</option><option value="post">治疗后</option>
+          </select>
+          <span class="chart-lbl">亚型</span>
+          <select class="chart-sel" id="ch-sub" onchange="renderChart()"><option value="all">全部</option></select>
+          <span class="chart-lbl">图表</span>
+          <select class="chart-sel" id="ch-type" onchange="renderChart()">
+            <option value="bar">柱状图</option><option value="pie">饼图</option>
+          </select>
+        </div>
+        <div class="chart-scroll-wrap">
+          <canvas id="mainChart" height="420"></canvas>
+        </div>
+        <div class="dlrow" style="margin-top:0">
+          <button class="btn bo" onclick="dlChartPng()">⬇ 下载高清 PNG</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ft">HIV Drug Resistance Comprehensive Analysis Platform v9 · 2026</div>
+</main>
+</div>
+
+<script>
+/* ═══════════════════════════════════
+   WHO 2009 TDR MUTATION LIST
+═══════════════════════════════════ */
+const TDR_WHO={
+  nrti:['M41L','K65R','D67N','D67G','D67E','T69D','T69ins','K70R','K70E','L74V','L74I',
+    'V75M','V75T','V75A','V75S','F77L','Y115F','F116Y','Q151M','M184V','M184I','L210W',
+    'T215Y','T215F','T215I','T215S','T215C','T215D','T215V','T215E','K219Q','K219E','K219N','K219R'],
+  nnrti:['L100I','K101E','K101P','K103N','K103S','V106M','V106A','V179F',
+    'Y181C','Y181I','Y181V','Y188L','Y188H','Y188C','G190A','G190S','G190E','P225H','M230L'],
+  pi:['L23I','L24I','D30N','V32I','M46I','M46L','I47V','I47A','G48V','G48M',
+    'I50V','I50L','F53L','F53Y','I54V','I54L','I54M','I54A','I54T','I54S',
+    'G73S','G73T','G73C','G73A','L76V','V82A','V82T','V82F','V82S','V82C','V82M','V82L',
+    'N83D','I84V','I84A','I84C','I85V','N88D','N88S','L90M']
+};
+
+/* ═══════════════════════════════════
+   STATE
+═══════════════════════════════════ */
+const FILES={prrt:null,in:null,supp:null,sub:null};
+const KB_DATA={pi:null,nrti:null,nnrti:null,insti:null};
+let kbLoaded={pi:false,nrti:false,nnrti:false,insti:false};
+let tdrEnabled=false;
+let countMode='simple';
+let countDrug='pi',countTreat='all';
+let tdrViewDrug='pi';
+let seqData=[];
+let treatMap={},subMap={};
+let mutCounts={pi:{},nrti:{},nnrti:{},insti:{}};
+let traceRows={pi:[],nrti:[],nnrti:[],insti:[]};
+let anomalyRows={pi:[],nrti:[],nnrti:[],insti:[]};
+let tdrCounts={pi:{},nrti:{},nnrti:{},insti:{}};
+let judgePage=0,tracePage=0;
+
+const DRUG_NAMES={pi:'蛋白酶 PI',nrti:'核苷类 NRTI',nnrti:'非核苷类 NNRTI',insti:'整合酶 INSTI'};
+const DRUG_COLORS={pi:'bl',nrti:'gr',nnrti:'am',insti:'pk'};
+
+/* ═══════════════════════════════════
+   INIT
+═══════════════════════════════════ */
+window.addEventListener('DOMContentLoaded',()=>{
+  autoLoadKB();
+  document.querySelectorAll('input[name="year-src"]').forEach(r=>{
+    r.addEventListener('change',()=>{
+      document.getElementById('year-custom-cfg').style.display=
+        document.querySelector('input[name="year-src"]:checked')?.value==='custom'?'':'none';
+    });
+  });
+  document.getElementById('sub-use').addEventListener('change',e=>{
+    document.getElementById('sub-custom-cfg').style.display=e.target.value==='custom'?'':'none';
+  });
+});
+
+/* ═══════════════════════════════════
+   KB AUTO LOAD
+═══════════════════════════════════ */
+async function autoLoadKB(){
+  const files={pi:'data/datasheet-PI.csv',nrti:'data/datasheet-NRTI.csv',nnrti:'data/datasheet-NNRTI.csv',insti:'data/datasheet-INSTI.csv'};
+  let ok=0;
+  for(const[drug,path]of Object.entries(files)){
+    try{
+      const resp=await fetch(path);
+      if(!resp.ok)throw new Error(resp.status);
+      parseKBCSV(drug,await resp.text());
+      ok++;
+    }catch(e){console.warn('KB load fail:',drug,e);}
+  }
+  updateKBDisplay();
+  const note=document.getElementById('kb-status-note');
+  if(ok<4){
+    note.innerHTML='<strong>⚠️ 部分知识库自动加载失败</strong>（'+ok+'/4）。请将 <code>data/</code> 文件夹与HTML放同一目录，或点击下方手动上传。';
+    note.className='note am';
+    document.getElementById('kb-manual-area').style.display='';
+  }else{
+    note.innerHTML='<strong>✓ 知识库已自动加载（4/4）</strong>。如需替换可点击下方手动上传。';
+    note.className='note gr';
+  }
+}
+
+function parseKBCSV(drug,txt){
+  const lines=txt.replace(/\r/g,'').split('\n').filter(l=>l.trim());
+  if(lines.length<2)return;
+  const header=lines[0].split(',');
+  const drugNames=header.slice(1).map(h=>h.trim()).filter(Boolean);
+  const rows=[];
+  for(let i=1;i<lines.length;i++){
+    const parts=lines[i].split(',');
+    const rule=parts[0].trim();if(!rule)continue;
+    const scores=[];
+    for(let j=1;j<=drugNames.length&&j<parts.length;j++){
+      const v=parseFloat(parts[j]);scores.push(isNaN(v)?0:v);
+    }
+    rows.push({rule,scores});
+  }
+  KB_DATA[drug]={drugs:drugNames,rows};
+  kbLoaded[drug]=true;
+}
+
+function updateKBDisplay(){
+  let total=0;
+  for(const drug of['pi','nrti','nnrti','insti']){
+    const el=document.getElementById('kbc-'+drug);
+    if(kbLoaded[drug]){
+      const kb=KB_DATA[drug];
+      const s=kb.rows.filter(r=>!r.rule.includes('+')).length;
+      const c=kb.rows.filter(r=>r.rule.includes('+')).length;
+      if(el)el.textContent=s+' 单 + '+c+' 组合';
+      document.getElementById('kbi-'+drug)?.classList.add('ok');
+      total++;
+    }else{
+      if(el)el.textContent='未加载';
+    }
+  }
+  document.getElementById('kb-badge').textContent=total+' / 4 已加载';
+  if(total>0)document.getElementById('s-kb')?.classList.add('done');
+}
+
+function kbDrop(e,drug){e.preventDefault();document.getElementById('kbuz-'+drug)?.classList.remove('drag');const f=e.dataTransfer?.files[0];if(f)doKbUpload(f,drug);}
+function kbLoad(inp,drug){if(inp.files[0])doKbUpload(inp.files[0],drug);}
+function doKbUpload(file,drug){
+  const reader=new FileReader();
+  reader.onload=e=>{parseKBCSV(drug,e.target.result);updateKBDisplay();document.getElementById('kbuz-'+drug)?.classList.add('loaded');document.getElementById('kbfn-'+drug).textContent=file.name;};
+  reader.readAsText(file,'UTF-8');
+}
+
+/* ═══════════════════════════════════
+   UTILS
+═══════════════════════════════════ */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function ci(v){v=(v||'').trim().toUpperCase();if(!v)return -1;if(/^\d+$/.test(v))return parseInt(v)-1;let idx=0;for(let i=0;i<v.length;i++)idx=idx*26+(v.charCodeAt(i)-64);return idx-1;}
+function getSeqThr(){return parseFloat(document.getElementById('seq-res-thr')?.value)||10;}
+function getKbThr(){return parseFloat(document.getElementById('kb-res-thr')?.value)||10;}
+function getTreatThr(){return parseInt(document.getElementById('treat-thr')?.value)||30;}
+function gt(){return new Date().toLocaleTimeString('zh-CN',{hour12:false});}
+function log(m,t='info'){const b=document.getElementById('logb');const d=document.createElement('div');d.className='ll';d.innerHTML='<span class="lt">['+gt()+']</span><span class="lm '+t+'">'+m+'</span>';b.appendChild(d);b.scrollTop=b.scrollHeight;}
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+function $(id){return document.getElementById(id.replace(/^#/,''));}
+function pcsv(txt){return txt.split(/\r?\n/).map(line=>{const r=[];let c='',q=false;for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){q=!q;continue;}if(ch===','&&!q){r.push(c.trim());c='';continue;}c+=ch;}r.push(c.trim());return r;}).filter(r=>r.some(x=>x!==''));}
+function rcsv(rows){return rows.map(r=>r.map(c=>{const s=String(c??'');return(s.includes(',')||s.includes('"'))?'"'+s.replace(/"/g,'""')+'"':s;}).join(',')).join('\r\n');}
+function dlcsv(rows,fn){const blob=new Blob(['\uFEFF'+rcsv(rows)],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=fn;a.click();URL.revokeObjectURL(url);}
+function parseDate(s){if(!s||!s.trim())return null;s=s.trim().replace(/[\-\.]/g,'/');const parts=s.split('/');if(parts.length>=3){const y=parseInt(parts[0]),m=parseInt(parts[1])-1,d=parseInt(parts[2]);if(!isNaN(y)&&!isNaN(m)&&!isNaN(d))return new Date(y,m,d);}return null;}
+function parseYear(s){if(!s||!s.trim())return null;const m=String(s).trim().match(/^(\d{4})/);return m?m[1]:null;}
+function daysDiff(d1,d2){if(!d1||!d2)return null;return Math.round((d1-d2)/(1000*60*60*24));}
+function parseColList(str){return str.split(',').map(s=>ci(s.trim())).filter(i=>i>=0);}
+
+/* ═══════════════════════════════════
+   MUTATION NORMALIZATION
+   E138A;V179E → ['E138A','V179E']
+   M184MIV → M184IV (remove ref AA from suffix)
+═══════════════════════════════════ */
+function normalizeMutStr(s){
+  s=(s||'').trim();
+  if(!s||s.toLowerCase()==='none'||s==='-'||s==='NA'||s==='')return[];
+  // Split by comma, semicolon, space, plus
+  const tokens=s.split(/[,;\s\/]+/).filter(t=>t&&t!=='+');
+  const results=[];
+  for(let t of tokens){
+    t=t.trim();if(!t)continue;
+    const m=t.match(/^([A-Za-z])(\d+)([A-Za-z*]+)$/);
+    if(!m)continue;
+    const ref=m[1].toUpperCase(),pos=m[2],suffix=m[3].toUpperCase();
+    let clean='';
+    for(const ch of suffix){if(ch!==ref)clean+=ch;}
+    if(!clean)continue;
+    results.push(ref+pos+clean);
+  }
+  return results;
+}
+
+function expandMut(mut){
+  const m=mut.match(/^([A-Za-z])(\d+)([A-Za-z*]+)$/);
+  if(!m)return[mut];
+  if(m[3].length===1)return[mut];
+  return m[3].split('').map(aa=>m[1]+m[2]+aa);
+}
+
+function getMutPos(m){const match=m.match(/\d+/);return match?parseInt(match[0]):99999;}
+
+/* ═══════════════════════════════════
+   KB LOOKUP
+═══════════════════════════════════ */
+function kbLookupSingle(drug,mut){
+  const kb=KB_DATA[drug];if(!kb)return 0;
+  const mutU=mut.toUpperCase();
+  for(const row of kb.rows){
+    if(row.rule.includes('+'))continue;
+    if(row.rule.toUpperCase()===mutU)return Math.max(...row.scores);
+    // Multi-AA rule: KB has e.g. E138AKT, mut is E138A
+    const rm=row.rule.match(/^([A-Za-z])(\d+)([A-Za-z*]+)$/);
+    if(!rm||rm[3].length<=1)continue;
+    const mm=mut.match(/^([A-Za-z])(\d+)([A-Za-z*])$/);
+    if(mm&&mm[1].toUpperCase()===rm[1].toUpperCase()&&mm[2]===rm[2]&&rm[3].toUpperCase().includes(mm[3].toUpperCase())){
+      return Math.max(...row.scores);
+    }
+  }
+  return 0;
+}
+
+function kbComboScore(drug,muts){
+  const kb=KB_DATA[drug];if(!kb)return 0;
+  let best=0;
+  for(const row of kb.rows){
+    if(!row.rule.includes('+'))continue;
+    const parts=row.rule.split('+').map(p=>p.trim());
+    let allMatch=true;
+    for(const part of parts){
+      const pm=part.match(/^([A-Za-z])(\d+)([A-Za-z*]+)$/);
+      if(!pm){allMatch=false;break;}
+      const ref=pm[1].toUpperCase(),pos=pm[2],aas=pm[3].toUpperCase();
+      let hit=false;
+      for(const mut of muts){
+        const mm=mut.match(/^([A-Za-z])(\d+)([A-Za-z*]+)$/);
+        if(!mm)continue;
+        if(mm[1].toUpperCase()===ref&&mm[2]===pos){
+          for(const ch of mm[3].toUpperCase()){if(aas.includes(ch)){hit=true;break;}}
+        }
+        if(hit)break;
+      }
+      if(!hit){allMatch=false;break;}
+    }
+    if(allMatch)best=Math.max(best,Math.max(...row.scores));
+  }
+  return best;
+}
+
+/* Check if sum of per-drug scores for all muts on any single drug >= threshold */
+function kbAdditiveCheck(drug,muts,thr){
+  const kb=KB_DATA[drug];if(!kb)return false;
+  const nDrugs=kb.drugs.length;
+  const sums=new Array(nDrugs).fill(0);
+  for(const mut of muts){
+    // Get per-drug scores for this mut
+    for(const row of kb.rows){
+      if(row.rule.includes('+'))continue;
+      let match=false;
+      if(row.rule.toUpperCase()===mut.toUpperCase()){match=true;}
+      else{
+        const rm=row.rule.match(/^([A-Za-z])(\d+)([A-Za-z*]+)$/);
+        if(rm&&rm[3].length>1){
+          const mm=mut.match(/^([A-Za-z])(\d+)([A-Za-z*])$/);
+          if(mm&&mm[1].toUpperCase()===rm[1].toUpperCase()&&mm[2]===rm[2]&&rm[3].toUpperCase().includes(mm[3].toUpperCase()))match=true;
+        }
+      }
+      if(match){for(let j=0;j<row.scores.length&&j<nDrugs;j++)sums[j]+=row.scores[j];break;}
+    }
+  }
+  // Also add combo bonuses
+  for(const row of kb.rows){
+    if(!row.rule.includes('+'))continue;
+    const parts=row.rule.split('+').map(p=>p.trim());
+    let allMatch=true;
+    for(const part of parts){
+      const pm=part.match(/^([A-Za-z])(\d+)([A-Za-z*]+)$/);
+      if(!pm){allMatch=false;break;}
+      const ref=pm[1].toUpperCase(),pos=pm[2],aas=pm[3].toUpperCase();
+      let hit=false;
+      for(const mut of muts){
+        const mm=mut.match(/^([A-Za-z])(\d+)([A-Za-z*]+)$/);
+        if(!mm)continue;
+        if(mm[1].toUpperCase()===ref&&mm[2]===pos){for(const ch of mm[3].toUpperCase()){if(aas.includes(ch)){hit=true;break;}}}
+        if(hit)break;
+      }
+      if(!hit){allMatch=false;break;}
+    }
+    if(allMatch){for(let j=0;j<row.scores.length&&j<nDrugs;j++)sums[j]+=row.scores[j];}
+  }
+  return sums.some(s=>s>=thr);
+}
+
+/* ═══════════════════════════════════
+   PAGE NAV
+═══════════════════════════════════ */
+function goPage(id){
+  document.querySelectorAll('.spage').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nla').forEach(a=>a.classList.remove('on'));
+  document.querySelectorAll('.sbi').forEach(s=>s.classList.remove('on'));
+  document.getElementById('page-'+id)?.classList.add('on');
+  document.querySelector('.nla[data-p="'+id+'"]')?.classList.add('on');
+  document.getElementById('sb-'+id)?.classList.add('on');
+  if(id==='upload')document.getElementById('sb-upload').classList.add('on');
+  if(id==='result-trace')_renderTracePage();
+  if(id==='result-chart')renderChart();
+}
+function toggleTDR(){tdrEnabled=!tdrEnabled;document.getElementById('tdr-toggle').classList.toggle('on',tdrEnabled);}
+
+/* ═══════════════════════════════════
+   FILE LOADING
+═══════════════════════════════════ */
+function dzo(e,id){e.preventDefault();document.getElementById(id)?.classList.add('drag');}
+function dzl(e,id){document.getElementById(id)?.classList.remove('drag');}
+function fileDrop(e,key){e.preventDefault();document.getElementById('uz-'+key)?.classList.remove('drag');const f=e.dataTransfer?.files[0];if(f)doFileLoad(f,key);}
+function fileLoad(inp,key){if(inp.files[0])doFileLoad(inp.files[0],key);}
+function doFileLoad(file,key){
+  const reader=new FileReader();
+  reader.onload=e=>{FILES[key]={name:file.name,rows:pcsv(e.target.result)};document.getElementById('uz-'+key).classList.add('loaded');document.getElementById('fn-'+key).textContent=file.name;updateBadges();};
+  reader.readAsText(file,'UTF-8');
+}
+function updateBadges(){
+  const dn=[FILES.prrt,FILES.in].filter(Boolean).length;
+  document.getElementById('drug-badge').textContent=dn+' / 2 已载入';
+  if(dn>0)document.getElementById('s-drug')?.classList.add('done');
+  if(FILES.supp){document.getElementById('supp-badge').textContent='已载入';document.getElementById('s-supp')?.classList.add('done');}
+  if(FILES.sub){document.getElementById('sub-badge').textContent='已载入';document.getElementById('s-sub')?.classList.add('done');}
+  const ok=FILES.prrt||FILES.in;
+  document.getElementById('btnrun').disabled=!ok;
+  document.getElementById('rhint').textContent=ok?'就绪':'需要：至少上传 Pr+RT 或 IN 文件';
+}
+
+/* ═══════════════════════════════════
+   MAIN ANALYSIS
+═══════════════════════════════════ */
+async function runAll(){
+  document.getElementById('logp').classList.add('on');
+  document.getElementById('logb').innerHTML='';
+  document.getElementById('ldot').classList.remove('done');
+  document.getElementById('lstatus').textContent='处理中...';
+  document.getElementById('btnrun').disabled=true;
+  log('开始处理...','info');await delay(50);
+
+  const seqThr=getSeqThr(),kbThr=getKbThr(),treatThr=getTreatThr();
+  seqData=[];treatMap={};subMap={};
+  mutCounts={pi:{},nrti:{},nnrti:{},insti:{}};
+  traceRows={pi:[],nrti:[],nnrti:[],insti:[]};
+  anomalyRows={pi:[],nrti:[],nnrti:[],insti:[]};
+  tdrCounts={pi:{},nrti:{},nnrti:{},insti:{}};
+
+  // 1. Supplementary info
+  if(FILES.supp){
+    const idC=ci($('supp-id').value),bloodC=ci($('supp-blood').value),treatC=ci($('supp-treat').value);
+    const ySrc=document.querySelector('input[name="year-src"]:checked')?.value||'blood';
+    const yCol=ci($('supp-year-col')?.value||'');
+    FILES.supp.rows.slice(1).forEach(row=>{
+      const id=(row[idC]||'').trim();if(!id)return;
+      const bd=parseDate(row[bloodC]),td=parseDate(row[treatC]);
+      const diff=daysDiff(bd,td);
+      const treat=diff!==null?(diff>=treatThr?'post':'pre'):null;
+      let year=null;
+      if(ySrc==='blood')year=parseYear(row[bloodC]);
+      else if(ySrc==='treat')year=parseYear(row[treatC]);
+      else if(ySrc==='custom'&&yCol>=0)year=(row[yCol]||'').trim();
+      treatMap[id]={treat,year,bloodDate:(row[bloodC]||'').trim(),treatDate:(row[treatC]||'').trim(),diff};
+    });
+    log('补充信息：'+Object.keys(treatMap).length+' 条，阈值 '+treatThr+' 天','ok');await delay(30);
+  }
+
+  // 2. Subtype info
+  if(FILES.sub){
+    const idC=ci($('sub-id').value),stC=ci($('sub-stanford').value),cdcC=ci($('sub-cdc').value),manC=ci($('sub-man').value);
+    const cusC=ci($('sub-cus-col')?.value||''),cusN=($('sub-cus-name')?.value||'').trim();
+    FILES.sub.rows.slice(1).forEach(row=>{
+      const id=(row[idC]||'').trim();if(!id)return;
+      subMap[id]={stanford:(row[stC]||'').trim()||'未知',cdc:(row[cdcC]||'').trim()||'未知',man:(row[manC]||'').trim()||'未知',
+        custom:cusC>=0?((row[cusC]||'').trim()||'未知'):null,cusName:cusN};
+    });
+    log('亚型信息：'+Object.keys(subMap).length+' 条','ok');await delay(30);
+  }
+
+  // 3. Process sequences
+  const seqMap={};
+  function getSeq(id){
+    if(!seqMap[id]){
+      const t=treatMap[id],s=subMap[id];
+      const useC=$('sub-use')?.value||'man';
+      let subtype='未知';
+      if(s){subtype=useC==='stanford'?s.stanford:useC==='cdc'?s.cdc:useC==='man'?s.man:useC==='custom'?(s.custom||'未知'):s.man;}
+      seqMap[id]={id,isPiRes:false,isNrtiRes:false,isNnrtiRes:false,isInstiRes:false,isAnyRes:false,
+        treat:t?.treat||null,year:t?.year||null,subtype,
+        piMuts:[],nrtiMuts:[],nnrtiMuts:[],instiMuts:[],piMax:0,nrtiMax:0,nnrtiMax:0,instiMax:0};
+    }
+    return seqMap[id];
+  }
+
+  if(FILES.prrt){
+    const R=FILES.prrt.rows,idC=ci($('prrt-id').value);
+    const piM1=ci($('prrt-pr-mut1').value),piM2=ci($('prrt-pr-mut2').value),piSC=parseColList($('prrt-pr-scores').value);
+    const nrM=ci($('prrt-nrti-mut').value),nrSC=parseColList($('prrt-nrti-scores').value);
+    const nnM=ci($('prrt-nnrti-mut').value),nnSC=parseColList($('prrt-nnrti-scores').value);
+    R.slice(1).forEach(row=>{
+      const id=(row[idC]||'').trim();if(!id)return;
+      const seq=getSeq(id);
+      seq.piMuts=[...normalizeMutStr(row[piM1]),...normalizeMutStr(row[piM2])];
+      seq.piMax=Math.max(0,...piSC.map(c=>parseFloat(row[c])||0));
+      seq.isPiRes=seq.piMax>=seqThr;
+      seq.nrtiMuts=normalizeMutStr(row[nrM]);
+      seq.nrtiMax=Math.max(0,...nrSC.map(c=>parseFloat(row[c])||0));
+      seq.isNrtiRes=seq.nrtiMax>=seqThr;
+      seq.nnrtiMuts=normalizeMutStr(row[nnM]);
+      seq.nnrtiMax=Math.max(0,...nnSC.map(c=>parseFloat(row[c])||0));
+      seq.isNnrtiRes=seq.nnrtiMax>=seqThr;
+      seq.isAnyRes=seq.isPiRes||seq.isNrtiRes||seq.isNnrtiRes||seq.isInstiRes;
+    });
+    log('Pr+RT：'+(R.length-1)+' 条序列','ok');await delay(30);
+  }
+
+  if(FILES.in){
+    const R=FILES.in.rows,idC=ci($('in-id').value);
+    const iM1=ci($('in-insti-mut1').value),iM2=ci($('in-insti-mut2').value),iSC=parseColList($('in-insti-scores').value);
+    R.slice(1).forEach(row=>{
+      const id=(row[idC]||'').trim();if(!id)return;
+      const seq=getSeq(id);
+      seq.instiMuts=[...normalizeMutStr(row[iM1]),...normalizeMutStr(row[iM2])];
+      seq.instiMax=Math.max(0,...iSC.map(c=>parseFloat(row[c])||0));
+      seq.isInstiRes=seq.instiMax>=seqThr;
+      seq.isAnyRes=seq.isPiRes||seq.isNrtiRes||seq.isNnrtiRes||seq.isInstiRes;
+    });
+    log('IN：'+(R.length-1)+' 条序列','ok');await delay(30);
+  }
+
+  seqData=Object.values(seqMap);
+  log('总序列：'+seqData.length+'，任意耐药：'+seqData.filter(s=>s.isAnyRes).length,'ok');
+
+  // 4. Mutation counting
+  log('突变计数（'+( countMode==='simple'?'计数':'科学计数' )+'）...','info');await delay(30);
+
+  const cfgs=[
+    {drug:'pi',resKey:'isPiRes',mutsKey:'piMuts'},
+    {drug:'nrti',resKey:'isNrtiRes',mutsKey:'nrtiMuts'},
+    {drug:'nnrti',resKey:'isNnrtiRes',mutsKey:'nnrtiMuts'},
+    {drug:'insti',resKey:'isInstiRes',mutsKey:'instiMuts'}
+  ];
+
+  for(const cfg of cfgs){
+    const{drug,resKey,mutsKey}=cfg;
+    mutCounts[drug]={all:{},pre:{},post:{}};
+    let rn=0,an=0;
+
+    for(const seq of seqData){
+      if(!seq[resKey])continue;
+      rn++;
+      const rawMuts=seq[mutsKey];
+      if(!rawMuts.length)continue;
+
+      const expanded=[];
+      for(const mut of rawMuts)expanded.push(...expandMut(mut));
+
+      const counted=[],skipped=[];
+      let hasCounted=false;
+
+      if(!kbLoaded[drug]){
+        // No KB: count all
+        rawMuts.forEach(m=>{counted.push(m);hasCounted=true;});
+      }else{
+        // Individual KB check
+        for(const mut of rawMuts){
+          const exp=expandMut(mut);
+          const pass=exp.filter(m=>kbLookupSingle(drug,m)>=kbThr);
+          if(pass.length===exp.length&&exp.length>1){
+            counted.push(mut);hasCounted=true;
+          }else if(pass.length>0){
+            pass.forEach(m=>{counted.push(m);hasCounted=true;});
+            exp.filter(m=>!pass.includes(m)).forEach(m=>skipped.push(m));
+          }else{
+            skipped.push(mut);
+          }
+        }
+
+        // Additive check: if no single mut passes threshold,
+        // check if their per-drug scores add up >= threshold on any single drug
+        if(!hasCounted&&kbLoaded[drug]&&expanded.length>1){
+          const addResult=kbAdditiveCheck(drug,expanded,kbThr);
+          if(addResult){
+            // All muts jointly explain resistance - count each that has score>0
+            for(const mut of rawMuts){
+              const exp2=expandMut(mut);
+              const hasScore=exp2.some(m=>kbLookupSingle(drug,m)>0);
+              if(hasScore){counted.push(mut);hasCounted=true;}
+              else skipped.push(mut);
+            }
+          }
+        }
+
+        // Scientific mode: combo rule check (KB explicit combos like V32I + I47AV)
+        if(countMode==='scientific'&&!hasCounted&&expanded.length>0){
+          const cs=kbComboScore(drug,expanded);
+          if(cs>=kbThr){
+            counted.push(rawMuts.join('+'));
+            hasCounted=true;
+          }
+        }
+      }
+
+      const isAnomaly=!hasCounted&&rawMuts.length>0&&kbLoaded[drug];
+      const treat=seq.treat||'all';
+      traceRows[drug].push({id:seq.id,treat,subtype:seq.subtype,rawMuts,counted,skipped,isRes:true,anomaly:isAnomaly});
+
+      if(isAnomaly){an++;anomalyRows[drug].push({id:seq.id,treat,subtype:seq.subtype,rawMuts,scoreMax:seq[cfg.drug==='pi'?'piMax':cfg.drug==='nrti'?'nrtiMax':cfg.drug==='nnrti'?'nnrtiMax':'instiMax']});continue;}
+
+      for(const m of counted){
+        mutCounts[drug]['all'][m]=(mutCounts[drug]['all'][m]||0)+1;
+        if(treat==='pre'||treat==='post')mutCounts[drug][treat][m]=(mutCounts[drug][treat][m]||0)+1;
+      }
+    }
+    log(DRUG_NAMES[drug]+'：耐药 '+rn+'，突变 '+Object.keys(mutCounts[drug]['all']).length+' 种，异常 '+an,'ok');await delay(20);
+  }
+
+  // 5. TDR
+  if(tdrEnabled){
+    log('TDR 统计（WHO 2009）...','info');
+    for(const drug of['pi','nrti','nnrti']){
+      tdrCounts[drug]={};
+      const whoList=TDR_WHO[drug]||[];
+      const mk=drug==='pi'?'piMuts':drug==='nrti'?'nrtiMuts':'nnrtiMuts';
+      for(const seq of seqData){
+        for(const mut of seq[mk]){
+          for(const em of expandMut(mut)){
+            if(whoList.includes(em))tdrCounts[drug][em]=(tdrCounts[drug][em]||0)+1;
+          }
+        }
+      }
+    }
+    log('TDR 完成','ok');
+  }
+
+  log('✓ 全部完成！','ok');
+  document.getElementById('ldot').classList.add('done');
+  document.getElementById('lstatus').textContent='处理完成';
+  document.getElementById('btnrun').disabled=false;
+
+  showResults();showAnomalySection();
+  renderJudgeTable();renderCountContent();
+  if(tdrEnabled)renderTdrContent();
+  goPage('result-judge');
+}
+
+function showResults(){
+  for(const id of['judge-empty','count-empty','trace-empty','chart-empty'])$(id).style.display='none';
+  for(const id of['judge-main','count-main','trace-main','chart-main'])$(id).style.display='';
+  if(tdrEnabled)$('tdr-card').style.display='';
+  if(FILES.supp)$('btn-dl-treat').style.display='';
+  ['judge','count','trace','chart'].forEach(s=>$('sb-result-'+s)?.classList.add('done'));
+
+  const c=fn=>seqData.filter(fn).length;
+  $('judge-summary').innerHTML='<div class="sum-grid">'+
+    '<div class="scard"><div class="sv" style="color:var(--bl)">'+seqData.length+'</div><div class="sl">总序列</div></div>'+
+    '<div class="scard"><div class="sv" style="color:var(--rd)">'+c(s=>s.isAnyRes)+'</div><div class="sl">任意耐药</div></div>'+
+    '<div class="scard"><div class="sv" style="color:var(--bl)">'+c(s=>s.isPiRes)+'</div><div class="sl">PIs</div></div>'+
+    '<div class="scard"><div class="sv" style="color:var(--gr)">'+c(s=>s.isNrtiRes)+'</div><div class="sl">NRTIs</div></div>'+
+    '<div class="scard"><div class="sv" style="color:var(--am)">'+c(s=>s.isNnrtiRes)+'</div><div class="sl">NNRTIs</div></div>'+
+    '<div class="scard"><div class="sv" style="color:var(--pk)">'+c(s=>s.isInstiRes)+'</div><div class="sl">INSTIs</div></div>'+
+  '</div>';
+  $('judge-total-hint').textContent=seqData.length+' 条';
+}
+
+function showAnomalySection(){
+  const sec=$('anomaly-section'),btns=$('anomaly-btns');
+  const has=['pi','nrti','nnrti','insti'].some(d=>anomalyRows[d].length>0);
+  sec.style.display=has?'':'none';
+  btns.innerHTML=['pi','nrti','nnrti','insti'].map(d=>{
+    const n=anomalyRows[d].length;if(!n)return'';
+    return'<button class="btn brd" onclick="dlAnomaly(\''+d+'\')">⬇ '+DRUG_NAMES[d]+' 异常 ('+n+')</button>';
+  }).join('');
+}
+function dlAnomaly(drug){
+  const rows=anomalyRows[drug];if(!rows.length)return;
+  const out=[['序列ID','治疗','亚型','突变','药物最高分','原因'],...rows.map(r=>[r.id,r.treat||'',r.subtype||'',r.rawMuts.join(';'),r.scoreMax||'','耐药但突变无法解释评分'])];
+  dlcsv(out,'anomaly_'+drug+'.csv');
+}
+
+/* ═══════════════════════════════════
+   JUDGE TABLE
+═══════════════════════════════════ */
+function getJF(){const f=$('judge-filter')?.value||'all';let d=seqData;if(f==='any-res')d=d.filter(s=>s.isAnyRes);else if(f==='pi')d=d.filter(s=>s.isPiRes);else if(f==='nrti')d=d.filter(s=>s.isNrtiRes);else if(f==='nnrti')d=d.filter(s=>s.isNnrtiRes);else if(f==='insti')d=d.filter(s=>s.isInstiRes);return d;}
+function judgePageReset(){judgePage=0;renderJudgeTable();}
+function judgePgPrev(){judgePage=Math.max(0,judgePage-1);renderJudgeTable();}
+function judgePgNext(){const d=getJF();const ps=parseInt($('judge-pagesize')?.value||50);judgePage=Math.min(judgePage+1,Math.floor((d.length-1)/ps));renderJudgeTable();}
+
+function renderJudgeTable(){
+  const data=getJF(),ps=parseInt($('judge-pagesize')?.value||50);
+  const pd=data.slice(judgePage*ps,(judgePage+1)*ps);
+  const yn=v=>v?'<span style="color:var(--rd);font-weight:600">✓</span>':'<span style="color:var(--tx4)">—</span>';
+  const tl=t=>t==='pre'?'<span class="chip ca">前</span>':t==='post'?'<span class="chip cbl">后</span>':'—';
+  let h='<table class="rtbl"><thead><tr><th>ID</th><th>治疗</th><th>亚型</th><th>PIs</th><th>NRTIs</th><th>NNRTIs</th><th>INSTIs</th><th>任意</th></tr></thead><tbody>';
+  for(const s of pd)h+='<tr'+(s.isAnyRes?' style="background:var(--rdl)"':'')+'><td class="mut-col" style="font-size:11px">'+esc(s.id)+'</td><td>'+tl(s.treat)+'</td><td><span class="trace-sub">'+esc(s.subtype||'—')+'</span></td><td>'+yn(s.isPiRes)+'</td><td>'+yn(s.isNrtiRes)+'</td><td>'+yn(s.isNnrtiRes)+'</td><td>'+yn(s.isInstiRes)+'</td><td>'+yn(s.isAnyRes)+'</td></tr>';
+  h+='</tbody></table>';
+  $('judge-table-wrap').innerHTML=h;
+  $('judge-pager-info').textContent='第 '+(judgePage+1)+'/'+( Math.ceil(data.length/ps)||1)+' 页（'+data.length+' 条）';
+}
+function dlJudge(){
+  const out=[['ID','治疗','年份','亚型','PIs','NRTIs','NNRTIs','INSTIs','任意'],...seqData.map(s=>[s.id,s.treat||'',s.year||'',s.subtype||'',s.isPiRes?'是':'否',s.isNrtiRes?'是':'否',s.isNnrtiRes?'是':'否',s.isInstiRes?'是':'否',s.isAnyRes?'是':'否'])];
+  dlcsv(out,'resistance_judgment.csv');
+}
+function dlTreatLabel(){
+  const out=[['ID','抽血日期','治疗日期','天数差','治疗状态','年份']];
+  for(const[id,i]of Object.entries(treatMap))out.push([id,i.bloodDate||'',i.treatDate||'',i.diff??'',i.treat||'',i.year||'']);
+  dlcsv(out,'treatment_labels.csv');
+}
+
+/* ═══════════════════════════════════
+   MUTATION COUNT
+═══════════════════════════════════ */
+function setCountMode(m){countMode=m;document.querySelectorAll('#count-mode-tog .stb').forEach(b=>b.classList.toggle('on',(m==='simple'&&b.textContent==='计数')||(m==='scientific'&&b.textContent==='科学计数')));runAll();}
+function setCountDrug(d){countDrug=d;document.querySelectorAll('#count-drug-tabs .tab').forEach(el=>el.classList.toggle('on',el.dataset.d===d));renderCountContent();}
+function setCountTreat(t){countTreat=t;document.querySelectorAll('#count-treat-tabs .tab').forEach(el=>el.classList.toggle('on',el.dataset.t===t));renderCountContent();}
+
+function sortMuts(counts){
+  const byPos={};
+  for(const[m,n]of Object.entries(counts)){const p=getMutPos(m);if(!byPos[p])byPos[p]=[];byPos[p].push([m,n]);}
+  for(const p of Object.keys(byPos))byPos[p].sort((a,b)=>b[1]-a[1]);
+  const result=[];
+  for(const p of Object.keys(byPos).map(Number).sort((a,b)=>a-b)){result.push({isGroup:true,pos:p});for(const[m,n]of byPos[p])result.push({isGroup:false,mut:m,count:n});}
+  return result;
+}
+
+function renderCountContent(){
+  const el=$('count-content');
+  const counts=mutCounts[countDrug]?.[countTreat]||{};
+  const items=sortMuts(counts);
+  const mutItems=items.filter(x=>!x.isGroup);
+  if(!mutItems.length){el.innerHTML='<div class="empty"><div class="empty-ico">🔍</div>当前条件下无数据</div>';$('count-dlrow').style.display='none';return;}
+  const maxV=Math.max(...mutItems.map(x=>x.count));
+  const clr=DRUG_COLORS[countDrug]||'bl';
+  let h='<div style="margin-bottom:8px"><span class="chip c'+clr+'">'+mutItems.length+' 种突变</span></div>';
+  h+='<div class="tblwrap"><table class="rtbl"><thead><tr><th style="width:32px">#</th><th>突变</th><th class="pw">次数</th></tr></thead><tbody>';
+  let rank=0;
+  for(const item of items){
+    if(item.isGroup){h+='<tr class="pos-sep"><td colspan="3"><span class="pos-lbl">位点 '+item.pos+'</span></td></tr>';}
+    else{rank++;const pct=Math.round(item.count/maxV*100);h+='<tr><td class="rn">'+rank+'</td><td><span class="mn">'+esc(item.mut)+'</span></td><td class="pw"><div class="pg"><div class="pb"><div class="pf '+clr+'" style="width:'+pct+'%"></div></div><span class="pv">'+item.count+'</span></div></td></tr>';}
+  }
+  h+='</tbody></table></div>';el.innerHTML=h;$('count-dlrow').style.display='';
+}
+function dlCount(){
+  const counts=mutCounts[countDrug]?.[countTreat]||{};
+  const out=[['药物类别','治疗状态','突变','次数']];
+  for(const[m,n]of Object.entries(counts).sort((a,b)=>b[1]-a[1]))out.push([DRUG_NAMES[countDrug],countTreat,m,n]);
+  dlcsv(out,'count_'+countDrug+'_'+countTreat+'.csv');
+}
+function dlCountAll(){
+  const out=[['药物类别','治疗状态','突变','次数']];
+  for(const drug of['pi','nrti','nnrti','insti'])for(const t of['all','pre','post'])for(const[m,n]of Object.entries(mutCounts[drug]?.[t]||{}).sort((a,b)=>b[1]-a[1]))out.push([DRUG_NAMES[drug],t,m,n]);
+  dlcsv(out,'count_all.csv');
+}
+
+/* ═══════════════════════════════════
+   TDR
+═══════════════════════════════════ */
+function setTdrDrug(d){tdrViewDrug=d;document.querySelectorAll('#tdr-drug-tabs .tab').forEach(el=>el.classList.toggle('on',el.dataset.d===d));renderTdrContent();}
+function renderTdrContent(){
+  const el=$('tdr-content');
+  const counts=tdrCounts[tdrViewDrug]||{};
+  const whoList=TDR_WHO[tdrViewDrug]||[];
+  if(!whoList.length){el.innerHTML='<div class="empty">该类别无WHO 2009列表</div>';return;}
+  const detected=whoList.filter(m=>(counts[m]||0)>0).length;
+  let h='<div style="margin-bottom:10px"><span class="chip cpu">WHO 突变 '+whoList.length+' 个</span> <span class="chip crd">检出 '+detected+' 个</span></div>';
+  h+='<div class="tblwrap"><table class="rtbl"><thead><tr><th>#</th><th>WHO 突变</th><th>检出次数</th></tr></thead><tbody>';
+  whoList.forEach((m,i)=>{
+    const n=counts[m]||0;
+    h+='<tr><td class="rn">'+(i+1)+'</td><td class="mut-col">'+esc(m)+'</td><td style="font-family:\'JetBrains Mono\',monospace;font-weight:600;color:'+(n>0?'var(--rd)':'var(--tx4)')+'">'+n+'</td></tr>';
+  });
+  h+='</tbody></table></div>';el.innerHTML=h;
+}
+function dlTdr(){
+  const out=[['药物类别','WHO突变','检出次数']];
+  for(const drug of['pi','nrti','nnrti'])for(const m of(TDR_WHO[drug]||[]))out.push([DRUG_NAMES[drug],m,tdrCounts[drug]?.[m]||0]);
+  dlcsv(out,'tdr_who2009.csv');
+}
+
+/* ═══════════════════════════════════
+   TRACE
+═══════════════════════════════════ */
+function getTF(){
+  const drug=$('trf-drug')?.value||'pi',treat=$('trf-treat')?.value||'all',res=$('trf-res')?.value||'res';
+  let rows=traceRows[drug]||[];
+  if(treat!=='all')rows=rows.filter(r=>r.treat===treat);
+  if(res==='res')rows=rows.filter(r=>r.isRes&&!r.anomaly);else if(res==='anomaly')rows=rows.filter(r=>r.anomaly);
+  return{rows,drug};
+}
+function tracePageReset(){tracePage=0;renderTrace();}
+function tracePagePrev(){tracePage=Math.max(0,tracePage-1);_renderTracePage();}
+function tracePageNext(){const{rows}=getTF();const ps=parseInt($('trf-pagesize')?.value||25);tracePage=Math.min(tracePage+1,Math.floor((rows.length-1)/ps));_renderTracePage();}
+function renderTrace(){tracePage=0;_renderTracePage();}
+
+function _renderTracePage(){
+  const{rows,drug}=getTF();
+  const ps=parseInt($('trf-pagesize')?.value||25);
+  const pageRows=rows.slice(tracePage*ps,(tracePage+1)*ps);
+  $('trace-total-hint').textContent=rows.length+' 条';
+  const tbody=$('trace-tbody');if(!tbody)return;
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="4" class="empty">无记录</td></tr>';$('trace-pager-info').textContent='0/0';return;}
+
+  tbody.innerHTML=pageRows.map(r=>{
+    const tl=r.treat==='pre'?'<span class="chip ca">前</span>':r.treat==='post'?'<span class="chip cbl">后</span>':'—';
+    if(r.anomaly){
+      const tags=r.rawMuts.map(m=>'<span class="mut-tag skip">'+esc(m)+'</span>').join('');
+      return'<tr style="background:var(--rdl)"><td><span class="trace-id">'+esc(r.id)+'</span></td><td>'+tl+'</td><td><div class="trace-counted">'+tags+'<span class="mut-arrow">→</span><span style="color:var(--rd);font-size:10px;font-weight:600">⚠ 异常</span></div></td><td style="text-align:center;color:var(--rd)">—</td></tr>';
+    }
+    const cSet=new Set(r.counted);
+    const tags=r.rawMuts.map(m=>'<span class="mut-tag '+(cSet.has(m)?'res':'skip')+'">'+esc(m)+'</span>').join('');
+    const cTags=r.counted.length?r.counted.map(m=>'<span class="mut-tag '+(m.includes('+')?'combo':'res')+'">'+esc(m)+'</span>').join(''):'<span style="color:var(--tx4);font-size:10px">无</span>';
+    return'<tr><td><span class="trace-id">'+esc(r.id)+'</span></td><td>'+tl+'</td><td><div class="trace-counted">'+tags+'<span class="mut-arrow">→</span>'+cTags+'</div></td><td style="text-align:center;font-family:\'JetBrains Mono\',monospace;font-weight:600;color:var(--bl)">'+r.counted.length+'</td></tr>';
+  }).join('');
+
+  const tp=Math.ceil(rows.length/ps)||1;
+  $('trace-pager-info').textContent=(tracePage+1)+'/'+tp;
+  $('trace-prev').disabled=tracePage===0;
+  $('trace-next').disabled=tracePage>=tp-1;
+}
+
+function dlTrace(){
+  const{rows,drug}=getTF();
+  const out=[['ID','药物','治疗','亚型','原始突变','计入突变','计入数'],...rows.map(r=>[r.id,DRUG_NAMES[drug],r.treat||'',r.subtype||'',r.rawMuts.join(';'),r.counted.join(';'),r.counted.length])];
+  dlcsv(out,'trace_'+drug+'.csv');
+}
+function dlTraceAll(){
+  const out=[['ID','药物','治疗','亚型','原始突变','计入突变','计入数']];
+  for(const drug of['pi','nrti','nnrti','insti'])for(const r of(traceRows[drug]||[]))out.push([r.id,DRUG_NAMES[drug],r.treat||'',r.subtype||'',r.rawMuts.join(';'),r.counted.join(';'),r.counted.length]);
+  dlcsv(out,'trace_all.csv');
+}
+
+/* ═══════════════════════════════════
+   CHART (improved)
+═══════════════════════════════════ */
+const PALETTE=[
+  ['#1d5fa8','#4a8ad0','#8bb8e8','#b8d5ef'],
+  ['#1e7a48','#3eaf6e','#7ed4a0','#b8e5cc'],
+  ['#c47000','#e8a840','#f0c470','#f8dfa0'],
+  ['#6030a0','#9060d0','#b890e0','#d4c0f0'],
+  ['#b02828','#d85050','#e88888','#f4bbbb'],
+  ['#0a7870','#30a8a0','#70ccc8','#b0e8e4'],
+  ['#a0286a','#d050a0','#e888c8','#f4bbe0']
+];
+
+function renderChart(){
+  const drug=$('ch-drug')?.value||'pi',treat=$('ch-treat')?.value||'all',sub=$('ch-sub')?.value||'all',type=$('ch-type')?.value||'bar';
+  let mc={};
+  const rows=(traceRows[drug]||[]).filter(r=>!r.anomaly&&(treat==='all'||r.treat===treat)&&(sub==='all'||r.subtype===sub));
+  rows.forEach(r=>r.counted.forEach(m=>{mc[m]=(mc[m]||0)+1;}));
+
+  // Update sub selector
+  const subs=new Set(['all']);(traceRows[drug]||[]).forEach(r=>{if(r.subtype&&r.subtype!=='未知')subs.add(r.subtype);});
+  const sel=$('ch-sub');const prev=sel.value;
+  sel.innerHTML=[...subs].sort((a,b)=>a==='all'?-1:a.localeCompare(b)).map(s=>'<option value="'+s+'">'+(s==='all'?'全部':s)+'</option>').join('');
+  if(subs.has(prev))sel.value=prev;
+
+  const canvas=$('mainChart'),ctx=canvas.getContext('2d');
+  if(!Object.keys(mc).length){
+    canvas.width=600;canvas.height=400;canvas.style.width='600px';
+    ctx.clearRect(0,0,600,400);ctx.fillStyle='#f4f3f0';ctx.fillRect(0,0,600,400);
+    ctx.fillStyle='#a8a49a';ctx.font='14px "Noto Sans SC",sans-serif';ctx.textAlign='center';
+    ctx.fillText('当前条件下无突变数据',300,200);return;
+  }
+
+  const sorted=Object.entries(mc).sort((a,b)=>getMutPos(a[0])-getMutPos(b[0]));
+  const labels=sorted.map(x=>x[0]),values=sorted.map(x=>x[1]);
+  const posList=[...new Set(labels.map(m=>getMutPos(m)))].sort((a,b)=>a-b);
+  const posIdx={};posList.forEach((p,i)=>posIdx[p]=i%PALETTE.length);
+  const posCnt={};
+  const colors=labels.map(m=>{const p=getMutPos(m);const row=PALETTE[posIdx[p]];const i=posCnt[p]||0;posCnt[p]=(posCnt[p]||0)+1;return row[i%row.length];});
+
+  const dpr=window.devicePixelRatio||1;
+
+  if(type==='bar'){
+    const barW=32,barGap=12,posGap=20;
+    // Calculate total width
+    let totalW=60; // left pad
+    let prevPos=null;
+    labels.forEach(lbl=>{const pos=getMutPos(lbl);if(prevPos!==null&&pos!==prevPos)totalW+=posGap;totalW+=barW+barGap;prevPos=pos;});
+    totalW+=60; // right pad
+    const W=Math.max(600,totalW),H=440;
+
+    canvas.style.width=W+'px';canvas.style.height=H+'px';
+    canvas.width=W*dpr;canvas.height=H*dpr;
+    ctx.scale(dpr,dpr);
+
+    // Background
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+
+    const pad={top:40,right:40,bottom:100,left:55},ch=H-pad.top-pad.bottom;
+    const maxV=Math.max(...values)||1;
+
+    // Title
+    ctx.fillStyle='#1e1c18';ctx.font='bold 13px "Noto Sans SC",sans-serif';ctx.textAlign='center';
+    ctx.fillText(DRUG_NAMES[drug]+' · '+(treat==='all'?'全部':treat==='pre'?'治疗前':'治疗后')+' · '+rows.length+' 例',W/2,24);
+
+    // Y grid
+    const ySteps=5;
+    for(let i=0;i<=ySteps;i++){
+      const y=pad.top+ch*(1-i/ySteps);
+      ctx.strokeStyle=i===0?'#c9c5bc':'#e8e6e0';ctx.lineWidth=i===0?1:0.5;
+      ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(W-pad.right,y);ctx.stroke();
+      ctx.fillStyle='#7a776e';ctx.font='11px "JetBrains Mono",monospace';ctx.textAlign='right';
+      ctx.fillText(Math.round(maxV*i/ySteps),pad.left-8,y+4);
+    }
+
+    // Bars
+    let cx=pad.left+barW/2+10;
+    prevPos=null;
+    labels.forEach((lbl,i)=>{
+      const pos=getMutPos(lbl);
+      if(prevPos!==null&&pos!==prevPos)cx+=posGap;
+      const barH=Math.max(2,(values[i]/maxV)*ch);
+      const bx=cx-barW/2,by=pad.top+ch-barH;
+
+      // Bar with rounded top
+      ctx.fillStyle=colors[i];
+      ctx.beginPath();
+      const r=3;
+      ctx.moveTo(bx,by+r);ctx.arcTo(bx,by,bx+r,by,r);ctx.arcTo(bx+barW,by,bx+barW,by+r,r);
+      ctx.lineTo(bx+barW,by+barH);ctx.lineTo(bx,by+barH);ctx.closePath();ctx.fill();
+
+      // Value label
+      ctx.fillStyle='#4a4740';ctx.font='bold 10px "JetBrains Mono",monospace';ctx.textAlign='center';
+      ctx.fillText(values[i],cx,by-6);
+
+      // X label (rotated)
+      ctx.save();ctx.translate(cx,pad.top+ch+10);ctx.rotate(-Math.PI/3);
+      ctx.fillStyle='#1e1c18';ctx.font='11px "JetBrains Mono",monospace';ctx.textAlign='right';
+      ctx.fillText(lbl,0,0);ctx.restore();
+
+      prevPos=pos;cx+=barW+barGap;
+    });
+
+  }else{
+    // Pie chart
+    const W=560,H=440;
+    canvas.style.width=W+'px';canvas.style.height=H+'px';
+    canvas.width=W*dpr;canvas.height=H*dpr;
+    ctx.scale(dpr,dpr);
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+
+    const total=values.reduce((a,b)=>a+b,0)||1;
+    const cx0=200,cy0=230,r=150;
+    let angle=-Math.PI/2;
+
+    // Title
+    ctx.fillStyle='#1e1c18';ctx.font='bold 13px "Noto Sans SC",sans-serif';ctx.textAlign='center';
+    ctx.fillText(DRUG_NAMES[drug]+' 突变分布',W/2,24);
+
+    values.forEach((v,i)=>{
+      const slice=(v/total)*Math.PI*2;
+      ctx.beginPath();ctx.moveTo(cx0,cy0);ctx.arc(cx0,cy0,r,angle,angle+slice);ctx.closePath();
+      ctx.fillStyle=colors[i];ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+
+      // Label on larger slices
+      if(slice>0.12){
+        const mid=angle+slice/2;
+        const lx=cx0+Math.cos(mid)*(r+18),ly=cy0+Math.sin(mid)*(r+18);
+        ctx.fillStyle='#1e1c18';ctx.font='10px "JetBrains Mono",monospace';
+        ctx.textAlign=lx>cx0?'left':'right';
+        ctx.fillText(labels[i]+' '+(v/total*100).toFixed(1)+'%',lx,ly);
+      }
+      angle+=slice;
+    });
+
+    // Legend
+    let ly=50;ctx.textAlign='left';
+    labels.slice(0,22).forEach((lbl,i)=>{
+      ctx.fillStyle=colors[i];
+      ctx.beginPath();ctx.arc(W-140,ly-3,5,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#4a4740';ctx.font='10px "JetBrains Mono",monospace';
+      ctx.fillText(lbl+' ('+values[i]+')',W-130,ly);ly+=17;
+    });
+  }
+}
+
+function dlChartPng(){
+  const canvas=$('mainChart');
+  canvas.toBlob(blob=>{const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='chart.png';a.click();URL.revokeObjectURL(url);},'image/png');
+}
+</script>
+</body>
+</html>
